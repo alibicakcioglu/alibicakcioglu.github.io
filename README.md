@@ -1,4 +1,4 @@
 # alibicakcioglu.github.io
 <body>
-<p> sık bakalım sık bakalım </p> 
+sık bakalım sık bakalım
 <body> 
