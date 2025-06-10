@@ -1,38 +1,780 @@
-/* Custom Styles */
+:root {
+    --primary-bg: #1a1a1a;
+    --secondary-bg: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+    --text-color: #2c3e50;
+    --accent-color: #ff6b6b;
+    --grid-color: rgba(255, 255, 255, 0.1);
+    --border-color: rgba(255, 255, 255, 0.2);
+    --food-red: #e74c3c;
+    --food-orange: #f39c12;
+    --food-yellow: #f1c40f;
+    --food-green: #27ae60;
+    --food-blue: #3498db;
+    --food-purple: #9b59b6;
+}
+
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #5900ff; /* bg-gray-900 */
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    background-image:
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 20px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-image 0.8s ease-in-out;
 }
 
-/* Akıcı görünüm için geçiş efekti */
-.question-block, #result-container {
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+/* App screen backgrounds */
+body.start-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(0, 170, 255, 0.1) 0%,
+            rgba(139, 195, 74, 0.1) 25%,
+            rgba(255, 193, 7, 0.1) 50%,
+            rgba(244, 67, 54, 0.1) 75%,
+            rgba(156, 39, 176, 0.1) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="40" y="40" font-size="20" opacity="0.7">🍕</text><text x="160" y="60" font-size="18" opacity="0.6">🍔</text><text x="120" y="140" font-size="22" opacity="0.8">🥗</text><text x="60" y="160" font-size="19" opacity="0.7">🥕</text><text x="140" y="120" font-size="16" opacity="0.6">🍲</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 200px 200px, 20px 20px, 20px 20px;
+    animation: float 20s ease-in-out infinite;
 }
 
-/* Geçişler için başlangıç durumu */
-.hidden-initial {
-    opacity: 0;
-    transform: translateY(20px);
+body.hungry-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 152, 0, 0.2) 0%,
+            rgba(244, 67, 54, 0.2) 50%,
+            rgba(121, 85, 72, 0.15) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="30" y="50" font-size="24" opacity="0.8">🍖</text><text x="130" y="80" font-size="20" opacity="0.7">🥞</text><text x="80" y="150" font-size="22" opacity="0.6">🧀</text><text x="170" y="160" font-size="18" opacity="0.7">🥓</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 250px 250px, 20px 20px, 20px 20px;
+    animation: float 18s ease-in-out infinite;
+}
+
+body.light-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(139, 195, 74, 0.2) 0%,
+            rgba(205, 220, 57, 0.2) 50%,
+            rgba(76, 175, 80, 0.15) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="50" y="60" font-size="20" opacity="0.8">🥗</text><text x="140" y="80" font-size="18" opacity="0.7">🥒</text><text x="100" y="140" font-size="22" opacity="0.6">🥕</text><text x="30" y="160" font-size="19" opacity="0.7">🍲</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 220px 220px, 20px 20px, 20px 20px;
+    animation: float 22s ease-in-out infinite;
+}
+
+body.fattening-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 193, 7, 0.2) 0%,
+            rgba(255, 152, 0, 0.2) 30%,
+            rgba(244, 67, 54, 0.2) 60%,
+            rgba(121, 85, 72, 0.15) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="50" y="70" font-size="24" opacity="0.9">🍕</text><text x="150" y="50" font-size="20" opacity="0.8">🍔</text><text x="90" y="150" font-size="22" opacity="0.7">🍝</text><text x="160" y="160" font-size="18" opacity="0.6">🧀</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 280px 280px, 20px 20px, 20px 20px;
+    animation: float 16s ease-in-out infinite;
+}
+
+body.light-choice-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(76, 175, 80, 0.2) 0%,
+            rgba(139, 195, 74, 0.2) 30%,
+            rgba(255, 235, 59, 0.15) 60%,
+            rgba(205, 220, 57, 0.2) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="50" cy="80" rx="15" ry="8" fill="%234caf50" opacity="0.8"/><ellipse cx="150" cy="60" rx="18" ry="10" fill="%238bc34a" opacity="0.7"/><ellipse cx="100" cy="140" rx="20" ry="12" fill="%23cddc39" opacity="0.6"/><circle cx="70" cy="50" r="3" fill="%23ffeb3b" opacity="0.8"/><circle cx="130" cy="90" r="4" fill="%23ff5722" opacity="0.7"/></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 250px 250px, 20px 20px, 20px 20px;
+    animation: float 24s ease-in-out infinite;
+}
+
+body.fattening-choice-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 193, 7, 0.2) 0%,
+            rgba(255, 152, 0, 0.2) 25%,
+            rgba(244, 67, 54, 0.2) 50%,
+            rgba(121, 85, 72, 0.2) 75%,
+            rgba(139, 69, 19, 0.15) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="60" cy="60" r="25" fill="%23ffc107" opacity="0.8"/><rect x="100" y="40" width="60" height="40" rx="20" fill="%23ff9800" opacity="0.7"/><polygon points="40,120 80,100 80,140" fill="%23f44336" opacity="0.6"/><rect x="120" y="120" width="50" height="20" rx="10" fill="%23795548" opacity="0.8"/></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 300px 300px, 20px 20px, 20px 20px;
+    animation: float 17s ease-in-out infinite;
+}
+
+/* Food-themed backgrounds */
+body.salad-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(76, 175, 80, 0.15) 0%,
+            rgba(139, 195, 74, 0.15) 50%,
+            rgba(205, 220, 57, 0.15) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="40" y="60" font-size="18" opacity="0.8">🥗</text><text x="160" y="40" font-size="16" opacity="0.8">🥒</text><text x="80" y="140" font-size="14" opacity="0.8">🍅</text><text x="150" y="160" font-size="15" opacity="0.8">🥕</text><text x="120" y="80" font-size="17" opacity="0.8">🌿</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 200px 200px, 20px 20px, 20px 20px;
+    animation: float 20s ease-in-out infinite;
+}
+
+body.pizza-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 193, 7, 0.2) 0%,
+            rgba(255, 152, 0, 0.2) 50%,
+            rgba(244, 67, 54, 0.2) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="50" y="50" font-size="20" opacity="0.9">🍕</text><text x="150" y="70" font-size="16" opacity="0.9">🧀</text><text x="90" y="130" font-size="18" opacity="0.9">🍅</text><text x="140" y="140" font-size="14" opacity="0.9">🌶️</text><text x="60" y="160" font-size="15" opacity="0.9">🫒</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 240px 240px, 20px 20px, 20px 20px;
+    animation: float 15s ease-in-out infinite;
+}
+
+body.pasta-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 235, 59, 0.2) 0%,
+            rgba(255, 193, 7, 0.2) 50%,
+            rgba(255, 152, 0, 0.2) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="40" y="70" font-size="20" opacity="0.8">🍝</text><text x="160" y="50" font-size="18" opacity="0.7">🧄</text><text x="90" y="140" font-size="22" opacity="0.8">🍅</text><text x="150" y="160" font-size="16" opacity="0.6">🧀</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 260px 260px, 20px 20px, 20px 20px;
+    animation: float 18s ease-in-out infinite;
+}
+
+body.burger-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(139, 69, 19, 0.2) 0%,
+            rgba(210, 105, 30, 0.2) 30%,
+            rgba(76, 175, 80, 0.15) 60%,
+            rgba(121, 85, 72, 0.2) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="50" y="70" font-size="24" opacity="0.9">🍔</text><text x="150" y="50" font-size="18" opacity="0.8">🥓</text><text x="90" y="140" font-size="20" opacity="0.7">🧀</text><text x="160" y="160" font-size="16" opacity="0.8">🍅</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 280px 280px, 20px 20px, 20px 20px;
+    animation: float 16s ease-in-out infinite;
+}
+
+body.soup-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 152, 0, 0.15) 0%,
+            rgba(255, 193, 7, 0.15) 50%,
+            rgba(76, 175, 80, 0.1) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="60" y="80" font-size="20" opacity="0.8">🍲</text><text x="140" y="60" font-size="16" opacity="0.8">🥕</text><text x="100" y="120" font-size="18" opacity="0.8">🥔</text><text x="160" y="140" font-size="14" opacity="0.8">🌿</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 220px 220px, 20px 20px, 20px 20px;
+    animation: float 22s ease-in-out infinite;
+}
+
+body.vegetables-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(76, 175, 80, 0.2) 0%,
+            rgba(139, 195, 74, 0.2) 25%,
+            rgba(255, 152, 0, 0.15) 50%,
+            rgba(244, 67, 54, 0.15) 75%,
+            rgba(156, 39, 176, 0.1) 100%
+        ),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="50" y="60" font-size="18" opacity="0.9">🥕</text><text x="140" y="50" font-size="20" opacity="0.9">🥒</text><text x="100" y="120" font-size="22" opacity="0.9">🍅</text><text x="60" y="150" font-size="16" opacity="0.8">🫑</text><text x="160" y="160" font-size="18" opacity="0.8">🧅</text></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 250px 250px, 20px 20px, 20px 20px;
+    animation: float 25s ease-in-out infinite;
+}
+
+/* Special celebration background for result screens */
+body.result-celebration-bg {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 107, 107, 0.2) 0%,
+            rgba(255, 193, 7, 0.2) 16%,
+            rgba(76, 175, 80, 0.2) 32%,
+            rgba(52, 152, 219, 0.2) 48%,
+            rgba(156, 39, 176, 0.2) 64%,
+            rgba(255, 152, 0, 0.2) 80%,
+            rgba(244, 67, 54, 0.2) 100%
+        ),
+        radial-gradient(circle at 15% 25%, rgba(255, 107, 107, 0.9) 8px, transparent 9px),
+        radial-gradient(circle at 85% 20%, rgba(255, 193, 7, 0.9) 6px, transparent 7px),
+        radial-gradient(circle at 25% 60%, rgba(76, 175, 80, 0.9) 10px, transparent 11px),
+        radial-gradient(circle at 75% 50%, rgba(52, 152, 219, 0.9) 7px, transparent 8px),
+        radial-gradient(circle at 40% 80%, rgba(156, 39, 176, 0.9) 9px, transparent 10px),
+        radial-gradient(circle at 90% 75%, rgba(255, 152, 0, 0.9) 5px, transparent 6px),
+        radial-gradient(circle at 10% 85%, rgba(244, 67, 54, 0.9) 8px, transparent 9px),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="50" cy="50" r="12" fill="%23ff6b6b" opacity="0.8"/><polygon points="150,40 170,70 140,70" fill="%23ffc107" opacity="0.8"/><rect x="30" y="120" width="40" height="20" rx="10" fill="%234caf50" opacity="0.8"/><ellipse cx="150" cy="130" rx="15" ry="8" fill="%233498db" opacity="0.8"/><path d="M100,30 L120,50 L80,50 Z" fill="%23e74c3c" opacity="0.8"/></svg>'),
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+    background-size: 100% 100%, 120px 120px, 140px 140px, 160px 160px, 180px 180px, 200px 200px, 100px 100px, 130px 130px, 250px 250px, 20px 20px, 20px 20px;
+    animation: celebration 20s ease-in-out infinite;
+}
+
+@keyframes celebration {
+    0%, 100% { 
+        background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+    25% { 
+        background-position: 0% 0%, 15% 10%, -10% 15%, 12% -8%, 18% 12%, -12% 18%, 8% -5%, 20% 15%, 0% 0%, 0% 0%, 0% 0%;
+    }
+    50% { 
+        background-position: 0% 0%, 10% 25%, -20% 10%, 25% 20%, 12% -10%, 25% -12%, 15% 8%, -15% 25%, 0% 0%, 0% 0%, 0% 0%;
+    }
+    75% { 
+        background-position: 0% 0%, -10% 12%, 20% -15%, 8% 25%, -20% 15%, 10% 25%, -8% 20%, 25% -10%, 0% 0%, 0% 0%, 0% 0%;
+    }
+}
+
+@keyframes float {
+    0%, 100% { 
+        background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+    25% { 
+        background-position: 0% 0%, 10% 5%, -5% 10%, 8% -3%, 12% 8%, -8% 12%, 0% 0%, 0% 0%;
+    }
+    50% { 
+        background-position: 0% 0%, 5% 15%, -10% 5%, 15% 12%, 8% -5%, 15% -8%, 0% 0%, 0% 0%;
+    }
+    75% { 
+        background-position: 0% 0%, -5% 8%, 12% -8%, 3% 15%, -12% 10%, 5% 15%, 0% 0%, 0% 0%;
+    }
+}
+
+#app-container {
+    width: 90%;
+    max-width: 500px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(255, 255, 255, 0.9) 50%,
+        rgba(255, 255, 255, 0.95) 100%
+    );
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 0 3px rgba(255, 107, 107, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    overflow: hidden;
+    position: relative;
+    min-height: 350px;
+}
+
+#app-container::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, var(--food-red), var(--food-orange), var(--food-yellow), var(--food-green), var(--food-blue), var(--food-purple));
+    border-radius: 23px;
+    z-index: -1;
+    animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+.screen {
     display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Elementleri göstermek için animasyon */
-.fade-in-up {
-    opacity: 1;
-    transform: translateY(0);
+.screen.active {
+    display: flex;
 }
 
-/* Daha iyi görsel geri bildirim için özel düğme stilleri */
-.choice-btn {
-    transition: all 0.2s ease-in-out;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.choice-btn:hover {
+h1, h2 {
+    margin-top: 0;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--food-red), var(--food-orange), var(--food-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 2rem;
+}
+
+h1::before {
+    content: '🍽️ ';
+    font-size: 1.5em;
+    margin-right: 10px;
+}
+
+h2::before {
+    content: '🤔 ';
+    font-size: 1.2em;
+    margin-right: 8px;
+}
+
+p {
+    margin-bottom: 1.5rem;
+    color: #34495e;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: 3px solid transparent;
+    border-radius: 25px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--food-red), var(--food-orange));
+    color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    background: linear-gradient(135deg, var(--food-orange), var(--food-yellow));
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.6);
+}
+
+button:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+#start-btn::after {
+    content: ' 🚀';
+}
+
+.decision-btn[data-answer="yes"] {
+    background: linear-gradient(135deg, var(--food-green), var(--food-blue));
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+}
+
+.decision-btn[data-answer="yes"]:hover {
+    background: linear-gradient(135deg, var(--food-blue), var(--food-purple));
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
+}
+
+.decision-btn[data-answer="yes"]::after {
+    content: ' ✅';
+}
+
+.decision-btn[data-answer="no"] {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+.decision-btn[data-answer="no"]:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    box-shadow: 0 8px 25px rgba(192, 57, 43, 0.6);
+}
+
+.decision-btn[data-answer="no"]::after {
+    content: ' ❌';
+}
+
+.restart-btn {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+}
+
+.restart-btn:hover {
+    background: linear-gradient(135deg, #7f8c8d, #636e72);
+    box-shadow: 0 8px 25px rgba(127, 140, 141, 0.6);
+}
+
+.restart-btn::after {
+    content: ' 🔄';
+}
+
+.submit-btn::after {
+    content: ' ➡️';
+}
+
+#order-btn::after {
+    content: ' 🛒';
+}
+
+.choice-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+    margin: 1.5rem auto;
+    max-width: 400px;
+    width: 100%;
+}
+
+.choice-group label {
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.9));
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 350px;
+    min-height: 50px;
+}
+
+.choice-group label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--food-red), var(--food-orange), var(--food-yellow), var(--food-green), var(--food-blue), var(--food-purple));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.choice-group label:hover::before {
+    opacity: 0.1;
+}
+
+.choice-group label:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.choice-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+/* Food emojis for options */
+.choice-group label[for*="salad"]::after,
+input[value="salad"] + span::before {
+    content: '🥗 ';
+    font-size: 1.5em;
+    margin-left: auto;
+}
+
+.choice-group label[for*="vegetables"]::after,
+input[value="vegetables"] + span::before {
+    content: '🥕 ';
+    font-size: 1.5em;
+    margin-left: auto;
+}
+
+.choice-group label[for*="soup"]::after,
+input[value="soup"] + span::before {
+    content: '🍲 ';
+    font-size: 1.5em;
+    margin-left: auto;
+}
+
+.choice-group label[for*="pizza"]::after,
+input[value="pizza"] + span::before {
+    content: '🍕 ';
+    font-size: 1.5em;
+    margin-left: auto;
+}
+
+.choice-group label[for*="pasta"]::after,
+input[value="pasta"] + span::before {
+    content: '🍝 ';
+    font-size: 1.5em;
+    margin-left: auto;
+}
+
+.choice-group label[for*="burger"]::after,
+input[value="burger"] + span::before {
+    content: '🍔 ';
+    font-size: 1.5em;
+    margin-left: auto;
+}
+
+/* Custom radio buttons */
+input[type="radio"] {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 3px solid var(--food-red);
+    border-radius: 50%;
+    position: relative;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="radio"]:checked {
+    background: linear-gradient(135deg, var(--food-red), var(--food-orange));
+    border-color: var(--food-orange);
+    transform: scale(1.1);
+}
+
+input[type="radio"]:checked::after {
+    content: '✨';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    animation: sparkle 0.5s ease;
+}
+
+@keyframes sparkle {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+input[type="radio"]:hover {
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+    transform: scale(1.05);
+}
+
+.submit-btn {
+    margin-top: 1rem;
+}
+
+#suggestion-text {
+    background: linear-gradient(135deg, 
+        rgba(255, 107, 107, 0.1) 0%,
+        rgba(78, 205, 196, 0.1) 50%,
+        rgba(69, 183, 209, 0.1) 100%
+    );
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 1rem 0;
+    text-align: center;
+    line-height: 1.8;
+    position: relative;
+    overflow: hidden;
+}
+
+#suggestion-text::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, var(--food-red), var(--food-orange), var(--food-yellow), var(--food-green));
+    border-radius: 23px;
+    z-index: -1;
+    animation: borderShine 2s linear infinite;
+}
+
+@keyframes borderShine {
+    0% { filter: hue-rotate(0deg) brightness(1); }
+    50% { filter: hue-rotate(180deg) brightness(1.2); }
+    100% { filter: hue-rotate(360deg) brightness(1); }
+}
+
+#suggestion-text strong {
+    background: linear-gradient(135deg, var(--food-red), var(--food-orange), var(--food-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+#suggestion-text strong::before {
+    content: '🎯 ';
+    font-size: 1.2em;
+}
+
+#restaurant-selection {
+    margin: 1rem auto;
+    gap: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+#restaurant-selection label {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(248, 249, 250, 0.9) 100%
+    );
+    border: 2px solid rgba(52, 152, 219, 0.3);
+    border-radius: 12px;
+    padding: 12px 18px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 350px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+#restaurant-selection label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+#restaurant-selection label:hover::before {
+    left: 100%;
+}
+
+#restaurant-selection label:hover {
+    background: linear-gradient(135deg, 
+        rgba(52, 152, 219, 0.1) 0%,
+        rgba(155, 89, 182, 0.1) 100%
+    );
+    border-color: var(--food-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+}
+
+#restaurant-selection input[type="radio"]:checked + span {
+    background: linear-gradient(135deg, var(--food-blue), var(--food-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+#restaurant-selection label:has(input[type="radio"]:checked) {
+    background: linear-gradient(135deg, 
+        rgba(52, 152, 219, 0.2) 0%,
+        rgba(155, 89, 182, 0.2) 100%
+    );
+    border-color: var(--food-purple);
+    box-shadow: 0 0 20px rgba(155, 89, 182, 0.4);
+}
+
+#restaurant-selection span::before {
+    content: '🏪 ';
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+#order-btn:disabled {
+    background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+#order-btn:disabled:hover {
+    background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+    transform: none;
+    box-shadow: none;
+}
+
+#order-btn:disabled::before {
+    content: '';
+}
+
+#order-btn:disabled::after {
+    content: ' 🔒';
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    #app-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+        padding: 1.5rem;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+    }
+
+    .screen.active {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+        width: 80%;
+    }
+
+    button {
+        width: 100%;
+    }
 }
