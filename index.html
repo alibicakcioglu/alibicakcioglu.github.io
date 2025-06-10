@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Decision Helper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- START (Initial Visible Step) -->
+        <div id="step-q1-hungry" class="flow-step">
+            <div class="shape diamond">
+                <p>Are you hungry a lot?</p>
+            </div>
+            <div class="options">
+                <button id="btn-hungry-yes" class="btn">Yes</button>
+                <button id="btn-hungry-no" class="btn">No</button>
+            </div>
+        </div>
+
+        <!-- Step: Want light meals? -->
+        <div id="step-q2-light" class="flow-step hidden">
+            <div class="shape diamond">
+                <p>Do you want to eat light meals?</p>
+            </div>
+            <div class="options">
+                <button id="btn-light-yes" class="btn">Yes</button>
+                <button id="btn-light-no" class="btn">No</button>
+            </div>
+        </div>
+
+        <!-- Step: Want fattening dishes? -->
+        <div id="step-q2-fattening" class="flow-step hidden">
+            <div class="shape diamond">
+                <p>Do you want to eat fattening dishes?</p>
+            </div>
+            <div class="options">
+                <button id="btn-fattening-yes" class="btn">Yes</button>
+                <button id="btn-fattening-no" class="btn">No</button>
+            </div>
+        </div>
+        
+        <!-- Step: Choose light meal type -->
+        <div id="step-q3-light-specific" class="flow-step hidden">
+            <div class="shape diamond">
+                <p>Which light meals do you like most?</p>
+            </div>
+            <div class="options">
+                <button class="btn choice-btn" data-suggestion="salad">Salad</button>
+                <button class="btn choice-btn" data-suggestion="vegetables">Vegetables</button>
+                <button class="btn choice-btn" data-suggestion="soup">Soup</button>
+            </div>
+        </div>
+        
+        <!-- Step: Choose fattening dish type -->
+        <div id="step-q3-fattening-specific" class="flow-step hidden">
+            <div class="shape diamond">
+                <p>Which fattening dishes do you like most?</p>
+            </div>
+            <div class="options">
+                <button class="btn choice-btn" data-suggestion="pizza">Pizza</button>
+                <button class="btn choice-btn" data-suggestion="pasta">Pasta</button>
+                <button class="btn choice-btn" data-suggestion="burger">Burger</button>
+            </div>
+        </div>
+
+        <!-- Process Step 1: Suggestion -->
+        <div id="step-suggestion" class="flow-step hidden">
+            <div class="shape rectangle">
+                <p id="suggestion-text"></p>
+            </div>
+        </div>
+
+        <!-- Process Step 2: Choose Restaurant -->
+        <div id="step-choosing" class="flow-step hidden">
+            <div class="shape rectangle">
+                <p>Choose the highest-rated restaurant</p>
+            </div>
+        </div>
+
+        <!-- Process Step 3: Order -->
+        <div id="step-ordering" class="flow-step hidden">
+            <div class="shape rectangle">
+                <p>Order</p>
+            </div>
+        </div>
+
+        <!-- END -->
+        <div id="step-end" class="flow-step hidden">
+            <div class="shape ellipse">
+                <p>END</p>
+            </div>
+            <button id="btn-restart" class="btn">Start Over</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
