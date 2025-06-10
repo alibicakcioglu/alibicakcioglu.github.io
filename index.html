@@ -1,105 +1,87 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ne Yesem? - Karar Yardımcısı</title>
-    <!-- Harici CSS Dosyası -->
+    <title>Food Decision Helper</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts ve Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="text-white flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div id="app-container" class="w-full max-w-2xl mx-auto bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-10 shadow-2xl border border-gray-700">
-
-        <!-- Başlangıç Bloğu -->
-        <div id="start-block" class="text-center">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">Ne Yiyeceğine Karar Veremiyor musun?</h1>
-            <p class="text-gray-300 mb-8">Senin için mükemmel yemeği bulalım. Birkaç soruya cevap vererek öneri al.</p>
-            <button id="start-btn" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-500 choice-btn text-white font-bold py-3 px-8 rounded-lg text-lg">
-                Hadi Başlayalım
-            </button>
+    <div id="app-container">
+        <!-- START -->
+        <div id="start-screen" class="screen active">
+            <h1> Food Chooser App</h1>
+            <p>Let's find the perfect meal for you.</p>
+            <button id="start-btn">START</button>
         </div>
 
-        <!-- Soru 1: Çok mu açsın? -->
-        <div id="q-hungry" class="question-block hidden-initial">
-            <h2 class="text-2xl font-semibold text-center mb-8">Çok mu açsın?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button data-question="hungry" data-choice="yes" class="choice-btn bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-6 rounded-lg text-lg">
-                    Evet, kurt gibi açım!
-                </button>
-                <button data-question="hungry" data-choice="no" class="choice-btn bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-4 px-6 rounded-lg text-lg">
-                    Hayır, sadece biraz.
-                </button>
+        <!-- Decision: Are you hungry a lot? -->
+        <div id="hungry-question" class="screen">
+            <h2>Are you hungry a lot?</h2>
+            <div class="button-group">
+                <button class="decision-btn" data-answer="yes">Yes</button>
+                <button class="decision-btn" data-answer="no">No</button>
+            </div>
+        </div>
+        
+        <!-- Decision: Do you want to eat light meals? -->
+        <div id="light-question" class="screen">
+            <h2>Do you want to eat light meals?</h2>
+            <div class="button-group">
+                <button class="decision-btn" data-answer="yes">Yes</button>
+                <button class="decision-btn" data-answer="no">No</button>
             </div>
         </div>
 
-        <!-- Soru 2a: Hafif yemekler mi istersin? -->
-        <div id="q-light-meals" class="question-block hidden-initial">
-             <h2 class="text-2xl font-semibold text-center mb-8">Hafif bir şeyler mi yemek istersin?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button data-question="light-meals" data-choice="yes" class="choice-btn bg-blue-500 hover:bg-blue-400 text-white font-bold py-4 px-6 rounded-lg text-lg">
-                    Evet, hafif bir şeyler.
-                </button>
-                <button data-question="light-meals" data-choice="no" class="choice-btn bg-red-600 hover:bg-red-500 text-white font-bold py-4 px-6 rounded-lg text-lg">
-                    Hayır, daha ağır şeyler olsun.
-                </button>
+        <!-- Decision: Do you want to eat fattening dishes? -->
+        <div id="fattening-question" class="screen">
+            <h2>Do you want to eat fattening dishes?</h2>
+            <div class="button-group">
+                <button class="decision-btn" data-answer="yes">Yes</button>
+                <button class="decision-btn" data-answer="no">No</button>
             </div>
         </div>
 
-        <!-- Soru 2b: Ağır yemekler mi istersin? -->
-        <div id="q-fattening-dishes" class="question-block hidden-initial">
-             <h2 class="text-2xl font-semibold text-center mb-8">Doyurucu ve zengin bir lezzet mi arıyorsun?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button data-question="fattening-dishes" data-choice="yes" class="choice-btn bg-red-600 hover:bg-red-500 text-white font-bold py-4 px-6 rounded-lg text-lg">
-                    Evet, tam da öyle!
-                </button>
-                <button data-question="fattening-dishes" data-choice="no" class="choice-btn bg-blue-500 hover:bg-blue-400 text-white font-bold py-4 px-6 rounded-lg text-lg">
-                    Hayır, daha hafif bir şeyler.
-                </button>
+        <!-- Choice: Which light meals do you like most? -->
+        <div id="light-choice" class="screen">
+            <h2>Which light meals do you like most?</h2>
+            <div class="choice-group">
+                <label><input type="radio" name="light-food" value="salad"> Salad</label>
+                <label><input type="radio" name="light-food" value="vegetables"> Vegetables</label>
+                <label><input type="radio" name="light-food" value="soup"> Soup</label>
             </div>
+            <button id="submit-light-choice" class="submit-btn">Next</button>
         </div>
 
-        <!-- Soru 3a: Hangi hafif yemeği en çok seversin? -->
-        <div id="q-light-choice" class="question-block hidden-initial">
-            <h2 class="text-2xl font-semibold text-center mb-8">Hangi hafif yemek kulağa daha hoş geliyor?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <button data-food="salad" class="choice-btn bg-teal-500 hover:bg-teal-400 text-white font-bold py-4 px-6 rounded-lg text-lg">Salata</button>
-                <button data-food="vegetables" class="choice-btn bg-teal-500 hover:bg-teal-400 text-white font-bold py-4 px-6 rounded-lg text-lg">Sebze</button>
-                <button data-food="soup" class="choice-btn bg-teal-500 hover:bg-teal-400 text-white font-bold py-4 px-6 rounded-lg text-lg">Çorba</button>
+        <!-- Choice: Which fattening dishes do you like most? -->
+        <div id="fattening-choice" class="screen">
+            <h2>Which fattening dishes do you like most?</h2>
+            <div class="choice-group">
+                <label><input type="radio" name="fattening-food" value="pizza"> Pizza</label>
+                <label><input type="radio" name="fattening-food" value="pasta"> Pasta</label>
+                <label><input type="radio" name="fattening-food" value="burger"> Burger</label>
             </div>
+            <button id="submit-fattening-choice" class="submit-btn">Next</button>
         </div>
 
-        <!-- Soru 3b: Hangi ağır yemeği en çok seversin? -->
-        <div id="q-fattening-choice" class="question-block hidden-initial">
-            <h2 class="text-2xl font-semibold text-center mb-8">Şu an hangisi en lezzetli gelir?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <button data-food="pizza" class="choice-btn bg-orange-500 hover:bg-orange-400 text-white font-bold py-4 px-6 rounded-lg text-lg">Pizza</button>
-                <button data-food="pasta" class="choice-btn bg-orange-500 hover:bg-orange-400 text-white font-bold py-4 px-6 rounded-lg text-lg">Makarna</button>
-                <button data-food="burger" class="choice-btn bg-orange-500 hover:bg-orange-400 text-white font-bold py-4 px-6 rounded-lg text-lg">Burger</button>
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen">
+            <!-- Process: Suggest [X] restaurants -->
+            <div id="suggestion-text"></div>
+            <!-- Process: Choose the highest-rated restaurant -->
+            <p>Choose your preferred restaurant:</p>
+            <div id="restaurant-selection" class="choice-group">
+                <!-- Restaurant options will be populated by JavaScript -->
             </div>
+            <!-- Process: Order -->
+            <button id="order-btn" disabled>Order Now</button>
+            <button id="restart-btn" class="restart-btn">Start Over</button>
         </div>
 
-        <!-- Sonuç Alanı -->
-        <div id="result-container" class="hidden-initial text-center">
-            <h2 class="text-lg font-medium text-indigo-300 mb-2">Sana Özel Önerimiz</h2>
-            <div id="result-content" class="bg-gray-700/50 p-6 rounded-lg">
-                <!-- Dinamik içerik buraya gelecek -->
-            </div>
-            <button id="order-btn" class="mt-6 w-full md:w-auto bg-green-600 hover:bg-green-500 choice-btn text-white font-bold py-3 px-8 rounded-lg text-lg">
-                Sipariş Ver (Simülasyon)
-            </button>
-            <button id="restart-btn" class="mt-4 w-full md:w-auto bg-gray-600 hover:bg-gray-500 choice-btn text-white font-bold py-2 px-6 rounded-lg">
-                Baştan Başla
-            </button>
-        </div>
+        <!-- END (Implicitly handled by the restart button) -->
     </div>
 
-    <!-- Harici JavaScript Dosyası -->
     <script src="script.js"></script>
 </body>
 </html>
