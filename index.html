@@ -3,85 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Decision Helper</title>
+    <title>Phone Selector</title>
+    <!-- Link to Tailwind CSS CDN for responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Link to custom CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-inter">
+    <div id="app" class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Find Your Perfect Phone!</h1>
 
-    <div id="app-container">
-        <!-- START -->
-        <div id="start-screen" class="screen active">
-            <h1> Food Chooser App</h1>
-            <p>Let's find the perfect meal for you.</p>
-            <button id="start-btn">START</button>
+        <!-- Start Screen -->
+        <div id="start-screen" class="space-y-4">
+            <p class="text-lg text-gray-600 mb-6">Unsure about which phone to choose? Let us help you find the best fit based on your preferences!</p>
+            <button id="start-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                Start
+            </button>
         </div>
 
-        <!-- Decision: Are you hungry a lot? -->
-        <div id="hungry-question" class="screen">
-            <h2>Are you hungry a lot?</h2>
-            <div class="button-group">
-                <button class="decision-btn" data-answer="yes">Yes</button>
-                <button class="decision-btn" data-answer="no">No</button>
+        <!-- Question Screen (hidden by default) -->
+        <div id="question-screen" class="hidden space-y-6">
+            <p id="question-text" class="text-xl font-semibold text-gray-700"></p>
+            <div id="options-container" class="space-y-4">
+                <!-- Buttons will be dynamically inserted here by JavaScript -->
             </div>
-        </div>
-        
-        <!-- Decision: Do you want to eat light meals? -->
-        <div id="light-question" class="screen">
-            <h2>Do you want to eat light meals?</h2>
-            <div class="button-group">
-                <button class="decision-btn" data-answer="yes">Yes</button>
-                <button class="decision-btn" data-answer="no">No</button>
-            </div>
+            <p id="error-message" class="text-red-500 hidden mt-4"></p>
         </div>
 
-        <!-- Decision: Do you want to eat fattening dishes? -->
-        <div id="fattening-question" class="screen">
-            <h2>Do you want to eat fattening dishes?</h2>
-            <div class="button-group">
-                <button class="decision-btn" data-answer="yes">Yes</button>
-                <button class="decision-btn" data-answer="no">No</button>
-            </div>
+        <!-- Result Screen (hidden by default) -->
+        <div id="result-screen" class="hidden space-y-6">
+            <p class="text-xl font-semibold text-gray-700">Your Recommended Phone:</p>
+            <p id="suggested-phone" class="text-4xl font-extrabold text-blue-600 animate-pulse"></p>
+            <button id="start-over-button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 mt-6">
+                Start Over
+            </button>
         </div>
-
-        <!-- Choice: Which light meals do you like most? -->
-        <div id="light-choice" class="screen">
-            <h2>Which light meals do you like most?</h2>
-            <div class="choice-group">
-                <label><input type="radio" name="light-food" value="salad"> Salad</label>
-                <label><input type="radio" name="light-food" value="vegetables"> Vegetables</label>
-                <label><input type="radio" name="light-food" value="soup"> Soup</label>
-            </div>
-            <button id="submit-light-choice" class="submit-btn">Next</button>
-        </div>
-
-        <!-- Choice: Which fattening dishes do you like most? -->
-        <div id="fattening-choice" class="screen">
-            <h2>Which fattening dishes do you like most?</h2>
-            <div class="choice-group">
-                <label><input type="radio" name="fattening-food" value="pizza"> Pizza</label>
-                <label><input type="radio" name="fattening-food" value="pasta"> Pasta</label>
-                <label><input type="radio" name="fattening-food" value="burger"> Burger</label>
-            </div>
-            <button id="submit-fattening-choice" class="submit-btn">Next</button>
-        </div>
-
-        <!-- Result Screen -->
-        <div id="result-screen" class="screen">
-            <!-- Process: Suggest [X] restaurants -->
-            <div id="suggestion-text"></div>
-            <!-- Process: Choose the highest-rated restaurant -->
-            <p>Choose your preferred restaurant:</p>
-            <div id="restaurant-selection" class="choice-group">
-                <!-- Restaurant options will be populated by JavaScript -->
-            </div>
-            <!-- Process: Order -->
-            <button id="order-btn" disabled>Order Now</button>
-            <button id="restart-btn" class="restart-btn">Start Over</button>
-        </div>
-
-        <!-- END (Implicitly handled by the restart button) -->
     </div>
 
+    <!-- Link to custom JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
