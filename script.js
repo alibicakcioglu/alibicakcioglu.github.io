@@ -1,199 +1,251 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Set initial background
-    document.body.className = 'start-bg';
-    
-    // --- Element Selectors ---
-    const screens = document.querySelectorAll('.screen');
-    const startBtn = document.getElementById('start-btn');
-    const hungryQuestion = document.getElementById('hungry-question');
-    const lightQuestion = document.getElementById('light-question');
-    const fatteningQuestion = document.getElementById('fattening-question');
-    const submitLightChoiceBtn = document.getElementById('submit-light-choice');
-    const submitFatteningChoiceBtn = document.getElementById('submit-fattening-choice');
-    const orderBtn = document.getElementById('order-btn');
-    const restartBtn = document.getElementById('restart-btn');
-    const suggestionText = document.getElementById('suggestion-text');
+// script.js
 
-    // --- State Management ---
-    const showScreen = (screenId) => {
-        screens.forEach(screen => screen.classList.remove('active'));
-        const activeScreen = document.getElementById(screenId);
-        if (activeScreen) {
-            activeScreen.classList.add('active');
+// DOM Elements
+const startScreen = document.getElementById('start-screen');
+const questionScreen = document.getElementById('question-screen');
+const resultScreen = document.getElementById('result-screen');
+const startButton = document.getElementById('start-button');
+const questionText = document.getElementById('question-text');
+const optionsContainer = document.getElementById('options-container');
+const suggestedPhone = document.getElementById('suggested-phone');
+const startOverButton = document.getElementById('start-over-button');
+const errorMessage = document.getElementById('error-message');
+
+// User choices state
+let userChoices = {
+    budget: null,
+    camera: null,
+    battery: null
+};
+
+// Flowchart questions and options
+const questions = {
+    start: {
+        text: "What is your budget?",
+        options: [
+            { text: "Between 25,000 and 40,000 lira", value: "Y", next: "camera_or_battery_Y" },
+            { text: "Between 40,000 and 60,000 lira", value: "L", next: "camera_or_battery_L" },
+            { text: "Between 60,000 and 140,000 lira", value: "F", next: "camera_or_battery_F" }
+        ],
+        type: 'budget'
+    },
+    camera_or_battery_Y: {
+        text: "Is camera quality important to you?",
+        options: [
+            { text: "Yes", value: "S", next: "battery_Y_S" },
+            { text: "No", value: "notS", next: "battery_Y_notS" }
+        ],
+        type: 'camera'
+    },
+    camera_or_battery_L: {
+        text: "Is camera quality important to you?",
+        options: [
+            { text: "Yes", value: "S", next: "battery_L_S" },
+            { text: "No", value: "notS", next: "battery_L_notS" }
+        ],
+        type: 'camera'
+    },
+    camera_or_battery_F: {
+        text: "Is camera quality important to you?",
+        options: [
+            { text: "Yes", value: "S", next: "battery_F_S" },
+            { text: "No", value: "notS", next: "battery_F_notS" }
+        ],
+        type: 'camera'
+    },
+    battery_Y_S: {
+        text: "Is battery capacity important to you?",
+        options: [
+            { text: "Yes", value: "V", next: "result" },
+            { text: "No", value: "notV", next: "result" }
+        ],
+        type: 'battery'
+    },
+    battery_Y_notS: {
+        text: "Is battery capacity important to you?",
+        options: [
+            { text: "Yes", value: "V", next: "result" },
+            { text: "No", value: "notV", next: "result" }
+        ],
+        type: 'battery'
+    },
+    battery_L_S: {
+        text: "Is battery capacity important to you?",
+        options: [
+            { text: "Yes", value: "V", next: "result" },
+            { text: "No", value: "notV", next: "result" }
+        ],
+        type: 'battery'
+    },
+    battery_L_notS: {
+        text: "Is battery capacity important to you?",
+        options: [
+            { text: "Yes", value: "V", next: "result" },
+            { text: "No", value: "notV", next: "result" }
+        ],
+        type: 'battery'
+    },
+    battery_F_S: {
+        text: "Is battery capacity important to you?",
+        options: [
+            { text: "Yes", value: "V", next: "result" },
+            { text: "No", value: "notV", next: "result" }
+        ],
+        type: 'battery'
+    },
+    battery_F_notS: {
+        text: "Is battery capacity important to you?",
+        options: [
+            { text: "Yes", value: "V", next: "result" },
+            { text: "No", value: "notV", next: "result" }
+        ],
+        type: 'battery'
+    }
+};
+
+// Current step in the flowchart
+let currentStep = 'start';
+
+/**
+ * Displays a message to the user for a short period.
+ * @param {string} message - The message to display.
+ */
+function showMessage(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.remove('hidden');
+    setTimeout(() => {
+        errorMessage.classList.add('hidden');
+    }, 3000); // Hide after 3 seconds
+}
+
+/**
+ * Renders the current question and its options.
+ */
+function renderQuestion() {
+    const questionData = questions[currentStep];
+    if (!questionData) {
+        console.error("Invalid step:", currentStep);
+        return;
+    }
+
+    questionText.textContent = questionData.text;
+    optionsContainer.innerHTML = ''; // Clear previous options
+
+    questionData.options.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option.text;
+        button.classList.add('option-button');
+        // Add click event listener to each option button
+        button.addEventListener('click', () => handleOptionClick(option, questionData.type));
+        optionsContainer.appendChild(button);
+    });
+
+    startScreen.classList.add('hidden');
+    questionScreen.classList.remove('hidden');
+    resultScreen.classList.add('hidden');
+}
+
+/**
+ * Handles the click event on an option button.
+ * @param {object} option - The selected option object.
+ * @param {string} type - The type of question (e.g., 'budget', 'camera', 'battery').
+ */
+function handleOptionClick(option, type) {
+    // Visual feedback: Highlight selected button
+    const allButtons = optionsContainer.querySelectorAll('.option-button');
+    allButtons.forEach(btn => btn.classList.remove('selected'));
+    event.target.classList.add('selected');
+
+    // Store the user's choice
+    userChoices[type] = option.value;
+
+    // Proceed to the next step or determine the result
+    currentStep = option.next;
+
+    // Small delay for visual feedback before proceeding
+    setTimeout(() => {
+        if (currentStep === 'result') {
+            displayResult();
+        } else {
+            renderQuestion();
         }
-        // Set background theme based on screen
-        setBackgroundTheme(screenId);
+    }, 300);
+}
+
+/**
+ * Determines and displays the final phone recommendation based on user choices.
+ */
+function displayResult() {
+    const { budget, camera, battery } = userChoices;
+    let recommendedPhone = "No phone found for your criteria."; // Default message
+
+    // Map logical statements to recommendations
+    // Y: 25-40k TL, L: 40-60k TL, F: 60-140k TL
+    // S: Camera important, notS: Camera not important
+    // V: Battery important, notV: Battery not important
+
+    // Y Budget
+    if (budget === "Y") {
+        if (camera === "S" && battery === "notV") { // Y ∧ S ∧ ¬V → AD
+            recommendedPhone = "iPhone 13";
+        } else if (camera === "notS" && battery === "V") { // Y ∧ ¬S ∧ V → SP
+            recommendedPhone = "Honor 400 Pro";
+        } else if (camera === "notS" && battery === "notV") { // Y ∧ ¬S ∧ ¬V → PL
+            recommendedPhone = "Xiaomi 14T Pro";
+        } else if (camera === "S" && battery === "V") { // Y ∧ S ∧ V → YS
+            recommendedPhone = "Samsung S24 Plus";
+        }
+    }
+    // L Budget
+    else if (budget === "L") {
+        if (camera === "S" && battery === "V") { // L ∧ S ∧ V → LK
+            recommendedPhone = "iPhone 15 Plus";
+        } else if (camera === "S" && battery === "notV") { // L ∧ S ∧ ¬V → CR
+            recommendedPhone = "iPhone 16";
+        } else if (camera === "notS" && battery === "V") { // L ∧ ¬S ∧ V → ST
+            recommendedPhone = "Samsung Galaxy S25 Plus";
+        } else if (camera === "notS" && battery === "notV") { // L ∧ ¬S ∧ ¬V → SB
+            recommendedPhone = "Samsung Galaxy S25";
+        }
+    }
+    // F Budget
+    else if (budget === "F") {
+        if (camera === "S" && battery === "V") { // F ∧ S ∧ V → UV
+            recommendedPhone = "iPhone 16 Pro Max";
+        } else if (camera === "S" && battery === "notV") { // F ∧ S ∧ ¬V → OP
+            recommendedPhone = "iPhone 15 Pro Max";
+        } else if (camera === "notS" && battery === "V") { // F ∧ ¬S ∧ V → NP
+            recommendedPhone = "Samsung Galaxy S25 Ultra";
+        } else if (camera === "notS" && battery === "notV") { // F ∧ ¬S ∧ ¬V → BR
+            recommendedPhone = "Samsung Galaxy S24 Ultra";
+        }
+    }
+
+    suggestedPhone.textContent = recommendedPhone;
+
+    questionScreen.classList.add('hidden');
+    resultScreen.classList.remove('hidden');
+}
+
+/**
+ * Resets the application to its initial state.
+ */
+function resetApp() {
+    userChoices = {
+        budget: null,
+        camera: null,
+        battery: null
     };
+    currentStep = 'start';
+    startScreen.classList.remove('hidden');
+    questionScreen.classList.add('hidden');
+    resultScreen.classList.add('hidden');
+    errorMessage.classList.add('hidden'); // Hide any previous error messages
+}
 
-    const setBackgroundTheme = (screenId) => {
-        // Remove all background classes
-        document.body.className = '';
-        
-        // Set background based on screen
-        switch(screenId) {
-            case 'start-screen':
-                document.body.className = 'start-bg';
-                break;
-            case 'hungry-question':
-                document.body.className = 'hungry-bg';
-                break;
-            case 'light-question':
-                document.body.className = 'light-bg';
-                break;
-            case 'fattening-question':
-                document.body.className = 'fattening-bg';
-                break;
-            case 'light-choice':
-                document.body.className = 'light-choice-bg';
-                break;
-            case 'fattening-choice':
-                document.body.className = 'fattening-choice-bg';
-                break;
-            // result-screen background will be set by food type
-        }
-    };
+// Event Listeners
+startButton.addEventListener('click', renderQuestion);
+startOverButton.addEventListener('click', resetApp);
 
-    // --- Flowchart Logic & Event Listeners ---
-
-    // 1. START Button
-    startBtn.addEventListener('click', () => {
-        showScreen('hungry-question');
-    });
-
-    // 2. Decision: "Are you hungry a lot?"
-    hungryQuestion.addEventListener('click', (e) => {
-        if (e.target.matches('.decision-btn')) {
-            const isHungry = e.target.getAttribute('data-answer') === 'yes';
-            // Path "Yes" -> Go to Fattening Question
-            // Path "No" -> Go to Light Question
-            showScreen(isHungry ? 'fattening-question' : 'light-question');
-        }
-    });
-    
-    // 3. Decision: "Do you want to eat light meals?" (Accessed if NOT hungry a lot)
-    lightQuestion.addEventListener('click', (e) => {
-        if (e.target.matches('.decision-btn')) {
-            const wantsLight = e.target.getAttribute('data-answer') === 'yes';
-            // Path "Yes" -> Go to Light Meal Choice
-            // Path "No" -> Go to Fattening Meal Choice
-            showScreen(wantsLight ? 'light-choice' : 'fattening-choice');
-        }
-    });
-
-    // 4. Decision: "Do you want to eat fattening dishes?" (Accessed if hungry a lot)
-    fatteningQuestion.addEventListener('click', (e) => {
-        if (e.target.matches('.decision-btn')) {
-            const wantsFattening = e.target.getAttribute('data-answer') === 'yes';
-            // Path "Yes" -> Go to Fattening Meal Choice
-            // Path "No" -> Go to Light Meal Choice
-            showScreen(wantsFattening ? 'fattening-choice' : 'light-choice');
-        }
-    });
-
-    // 5. Process: Suggest light meal restaurants
-    submitLightChoiceBtn.addEventListener('click', () => {
-        const choice = document.querySelector('input[name="light-food"]:checked');
-        if (!choice) {
-            alert('Please select a meal type.'); // Simple validation
-            return;
-        }
-        displayResult(choice.value);
-    });
-
-    // 6. Process: Suggest fattening meal restaurants
-    submitFatteningChoiceBtn.addEventListener('click', () => {
-        const choice = document.querySelector('input[name="fattening-food"]:checked');
-        if (!choice) {
-            alert('Please select a meal type.'); // Simple validation
-            return;
-        }
-        displayResult(choice.value);
-    });
-    
-    // 7. Process: Consolidate results and show suggestion
-    const displayResult = (foodType) => {
-        const restaurants = getRestaurantSuggestions(foodType);
-        suggestionText.innerHTML = restaurants;
-        
-        // Set special celebration background for result screen
-        document.body.className = 'result-celebration-bg';
-        
-        showScreen('result-screen');
-    };
-
-    // Restaurant suggestions based on food type
-    const getRestaurantSuggestions = (foodType) => {
-        const restaurantData = {
-            'salad': [
-                'Green Garden Cafe - Fresh organic salads',
-                'Healthy Bites - Mediterranean salad bowls',
-                'Fresh & Clean - Customizable salad bar'
-            ],
-            'vegetables': [
-                'Veggie Paradise - Farm-to-table vegetables',
-                'Garden Fresh - Roasted vegetable platters',
-                'Nature\'s Kitchen - Steamed & grilled veggies'
-            ],
-            'soup': [
-                'Soup Central - Homemade daily soups',
-                'Warm Bowl - Traditional & exotic soups',
-                'Comfort Kitchen - Hearty soup combinations'
-            ],
-            'pizza': [
-                'Tony\'s Pizzeria - Authentic Italian pizza',
-                'Slice Paradise - New York style pizza',
-                'Cheesy Dreams - Gourmet pizza creations'
-            ],
-            'pasta': [
-                'Pasta Bella - Fresh handmade pasta',
-                'Italian Corner - Traditional pasta dishes',
-                'Noodle House - Creative pasta combinations'
-            ],
-            'burger': [
-                'Burger Palace - Juicy gourmet burgers',
-                'Stack House - Double-stacked specialties',
-                'Grill Master - BBQ burger classics'
-            ]
-        };
-
-        const suggestions = restaurantData[foodType] || ['No restaurants found'];
-        
-        // Create restaurant selection HTML
-        const restaurantSelection = document.getElementById('restaurant-selection');
-        restaurantSelection.innerHTML = suggestions.map((restaurant, index) => 
-            `<label>
-                <input type="radio" name="restaurant-choice" value="${restaurant}">
-                <span>${index + 1}. ${restaurant}</span>
-            </label>`
-        ).join('');
-        
-        // Add event listeners for restaurant selection
-        restaurantSelection.addEventListener('change', () => {
-            const orderBtn = document.getElementById('order-btn');
-            orderBtn.disabled = false;
-        });
-        
-        return `<strong>Top 3 ${foodType} restaurants:</strong>`;
-    };
-
-    // 8. Process: Order
-    orderBtn.addEventListener('click', () => {
-        const selectedRestaurant = document.querySelector('input[name="restaurant-choice"]:checked');
-        if (selectedRestaurant) {
-            alert(`Your order has been placed with ${selectedRestaurant.value.split(' - ')[0]}! Enjoy your meal! 🍽️`);
-        }
-    });
-    
-    // 9. END and Restart
-    restartBtn.addEventListener('click', () => {
-        // Reset radio buttons
-        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-        // Reset background
-        document.body.className = '';
-        // Reset order button
-        document.getElementById('order-btn').disabled = true;
-        // Go back to the start
-        showScreen('start-screen');
-    });
-
-});
+// Initialize the app on page load
+resetApp();
