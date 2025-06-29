@@ -23,9 +23,9 @@ const questions = {
     start: {
         text: "What is your budget?",
         options: [
-            { text: "Between 25,000 and 40,000 lira", value: "Y", next: "camera_or_battery_Y" },
-            { text: "Between 40,000 and 60,000 lira", value: "L", next: "camera_or_battery_L" },
-            { text: "Between 60,000 and 140,000 lira", value: "F", next: "camera_or_battery_F" }
+            { text: "Between 25,000 and 40,000 liras", value: "Y", next: "camera_or_battery_Y" },
+            { text: "Between 40,000 and 60,000 liras", value: "L", next: "camera_or_battery_L" },
+            { text: "Between 60,000 and 140,000 liras", value: "F", next: "camera_or_battery_F" }
         ],
         type: 'budget'
     },
