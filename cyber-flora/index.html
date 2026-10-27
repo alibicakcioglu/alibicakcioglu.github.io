@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b0e">
+  <meta name="description" content="Explore the inside of a computer. Power its chips with your cursor and disconnect before thermal overload.">
+  <title>Cyber Flora — Inside the machine</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='5' fill='%23080d10'/%3E%3Cpath d='M10 10h20v20H10zM15 3v7m10-7v7M15 30v7m10-7v7M3 15h7m-7 10h7m20-10h7m-7 10h7' fill='none' stroke='%2371ead8' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <div id="cursor" aria-hidden="true"><i></i><span></span></div>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Cyber Flora home"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="10" y="10" width="20" height="20"/><rect x="15" y="15" width="10" height="10"/><path d="M15 3v7m10-7v7M15 30v7m10-7v7M3 15h7m-7 10h7m20-10h7m-7 10h7"/></g></svg><span>cyber<span class="brand-light">flora</span><span class="brand-star">/ HW</span></span></a>
+    <span class="top-note mono">AN EXPERIMENT IN HUMAN–MACHINE CONTROL</span>
+    <button id="help-button" class="text-button"><span class="help-icon">?</span> How it works <span class="arrow">↗</span></button>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><div class="eyebrow mono"><span class="mini-line"></span> HARDWARE INTERFACE <span class="muted">/ 001</span></div><h1 id="page-title">Inside the machine.<br>Mind the <span>overload.</span></h1></div>
+      <div class="intro-right"><p>Every circuit has a limit.<br>You decide how far to push it.</p><span class="mono intro-hint"><span class="cross">⌖</span> CONNECT. POWER UP. DISCONNECT.</span></div>
+    </section>
+
+    <section class="workspace" aria-label="Interactive motherboard">
+      <div class="workspace-bar"><div class="garden-title"><span class="status-light"></span><h2>Motherboard / live</h2><span class="version mono">REV.02</span></div><div class="mode-switch" role="group" aria-label="Power mode"><button id="infinite-mode" data-mode="infinite" aria-pressed="false"><span class="mode-icon">∞</span> Infinite Capacity</button><button id="trap-mode" data-mode="trap" aria-pressed="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m8 1 6 3.5v7L8 15l-6-3.5v-7Z"/><path d="M8 5v4m0 2v.5"/></svg> Overload Trap</button></div></div>
+      <div class="garden-layout">
+        <div id="garden" class="garden" aria-label="Seven hardware modules. Hover or use Tab to power each chip.">
+          <div class="field-label mono"><span>SECTOR 01</span><span class="muted">MAINBOARD / PCB-07</span></div><div class="field-coordinate mono">X <span id="coord-x">000</span> <span class="coord-divider">/</span> Y <span id="coord-y">000</span></div>
+          <svg class="root-network" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="stem-fade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a69ac9" stop-opacity=".4"/><stop offset="1" stop-color="#777491" stop-opacity=".07"/></linearGradient></defs><g id="stems" fill="none" stroke="#659c9c" stroke-width="1"/></svg>
+          <div class="ambient-particles" aria-hidden="true"></div><div class="board-hardware" aria-hidden="true"><span class="board-mark">CF-07 / LOGIC BOARD<br><small>64-BIT · REV 2.0</small></span><div class="expansion-slot"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="capacitors"><i></i><i></i><i></i></div><div class="heatsink"></div><i class="screw s1"></i><i class="screw s2"></i><i class="screw s3"></i><i class="screw s4"></i></div>
+          <div id="nodes"></div>
+          <div id="field-message" class="field-message"><span class="message-orbit">&gt;_</span><span>SYSTEM READY / HOVER OVER A MODULE</span></div>
+          <div class="field-bottom mono"><span><i class="dot dim"></i> IDLE <i class="dot cyan"></i> ABSORBING <i class="dot red"></i> OVERLOAD</span><span class="specimen-count">07 MODULES <span class="muted">/</span> NO SOUND</span></div>
+          <span class="corner corner-tl"></span><span class="corner corner-tr"></span><span class="corner corner-bl"></span><span class="corner corner-br"></span>
+        </div>
+
+        <aside class="monitor" aria-label="Live hardware readings">
+          <div class="monitor-heading mono">HARDWARE MONITOR <span class="live-dots">•••</span></div>
+          <div class="monitor-status"><span id="state-icon" class="state-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 12v17L20 38 5 29V12Z"/><path d="m20 11 8 5v9l-8 5-8-5v-9Z"/><circle cx="20" cy="20" r="2"/></svg></span><div><span id="state-name" class="state-name">System standby</span><span id="state-detail" class="state-detail mono">SYSTEM IDLE</span></div></div>
+          <div class="energy-section"><div class="label-row mono"><span>POWER LOAD</span><span id="energy-percent">0<span>%</span></span></div><div class="energy-meter" aria-hidden="true" id="energy-meter"></div><div class="meter-scale mono"><span>0</span><span id="meter-end">CRITICAL / 3s</span></div></div>
+          <div class="timer-row"><span class="mono" id="timer-label">DWELL TIME</span><strong id="dwell-value">0.00<span>s</span></strong></div>
+          <p class="monitor-note" id="monitor-note">Your cursor supplies power.<br>Excess load triggers a lockout.</p>
+          <div class="session-stats"><div><strong id="feed-count">00</strong><span class="mono">CONNECTIONS</span></div><div><strong id="trap-count">00</strong><span class="mono">OVERLOADS</span></div></div>
+          <button id="reset-button" class="reset-button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7a6 6 0 1 1-1 5M4 3v4h4"/></svg> Reset system <span class="mono">↺</span></button>
+        </aside>
+      </div>
+      <div class="context-strip"><span class="context-icon">↗</span><p id="mode-description"><strong>Thermal protection active.</strong> Stay for 3 seconds and the system locks your cursor for 4.</p><span class="mode-label mono" id="mode-label">LIMITS CREATE RHYTHM</span></div>
+    </section>
+
+    <section class="guide" aria-label="How to interact"><div class="guide-item"><span class="step mono">01</span><div><h3>Connect to a module</h3><p>Hover over a chip to supply power.</p></div><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m9 5 14 12-8 1-4 7Z"/></svg></div><div class="guide-item"><span class="step mono">02</span><div><h3>Watch the thermal load</h3><p>Cyan is calm. Red means it's time to leave.</p></div><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 17h5l4-11 5 20 4-9h5"/></svg></div><div class="guide-item"><span class="step mono">03</span><div><h3>Feel the difference</h3><p>Switch modes. Notice how your rhythm changes.</p></div><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 11h20m-5-5 5 5-5 5M26 23H6m5-5-5 5 5 5"/></svg></div></section>
+    <footer><span class="mono">INPUT → POWER → HEAT → CONTROL</span><span><kbd>Tab</kbd> explore <span class="footer-separator">/</span> <kbd>Esc</kbd> release <span class="footer-separator">/</span> <span id="input-label">Pointer input</span><span class="footer-dot"></span></span></footer>
+  </main>
+
+  <dialog id="help-dialog"><button class="close-dialog" id="close-help" aria-label="Close instructions">×</button><div class="eyebrow mono">SYSTEM MANUAL / CYBER FLORA</div><h2>Every circuit<br>has a breaking point.</h2><p>Power a chip by hovering over it. With a keyboard, use <kbd>Tab</kbd> or <kbd>Shift + Tab</kbd> to focus a chip and supply power.</p><div class="help-modes"><div><span class="mono">01 / INFINITE CAPACITY</span><p>Stay as long as you like. The chip keeps glowing cyan, and you stay in control.</p></div><div><span class="mono">02 / OVERLOAD TRAP</span><p>At 3 continuous seconds, the chip overheats and locks the input bus. Your digital cursor and keyboard focus stay with it for 4 seconds, then it cools to gray. Move away and return to power it again.</p></div></div><p class="help-small">On touch screens, press and hold a chip. You can always press <kbd>Esc</kbd> to release early or use Reset system.</p><div class="experiment-note"><span class="mono">TRY IT TOGETHER</span><p>Ask a classmate to linger in both modes. Does the possibility of losing control make their attention more careful?</p></div><button id="start-button" class="primary-button">Enter the system <span>↗</span></button></dialog>
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" id="announcement"></div>
+</body>
+</html>
