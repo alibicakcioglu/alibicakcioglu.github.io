@@ -1,15 +1,15 @@
 # Cyber Flora — Hardware Edition
 
-An interactive neon motherboard exploring attention, overload, and loss of control. Move your cursor between CPU, GPU, RAM, BIOS, power, and I/O modules.
+An interactive neon motherboard exploring attention, overload, and loss of control. Move your cursor between unlabeled hardware modules.
 
 ## Modes
 
 - **Infinite Capacity:** modules glow while receiving attention and never trap the cursor.
-- **Overload Trap:** 3 continuous seconds of attention overload a module and lock the custom cursor for 4 seconds. It then cools to gray and releases control.
+- **Overload Trap:** Load rises from 0% to 100% over 3 seconds of attention. Returning to a module resumes its remaining load rather than starting again. While disconnected, load falls by one-sixth of full capacity per second. At 100%, the cursor locks for 4 seconds, then load resets to zero and the module turns gray.
 
 ## Controls
 
-- **Pointer:** hover over a module to supply power; leave before the threshold.
+- **Pointer:** hover over a module to supply power; disconnect before 100% to let it cool.
 - **Keyboard:** use Tab or Shift+Tab to explore modules. Focus supplies power; overloaded modules temporarily retain focus.
 - **Escape:** release an active lock early.
 - **Touch:** press and hold a module.

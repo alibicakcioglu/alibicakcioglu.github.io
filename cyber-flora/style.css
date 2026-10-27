@@ -12,3 +12,8 @@
 @media(min-width:1500px){.garden{height:510px}}
 @media(max-width:1100px){.board-mark{left:5%;font-size:6px}.board-mark small{font-size:5px}.expansion-slot{top:11%;height:12px}.node-label{font-size:6px}}
 @media(max-width:760px){.garden{height:490px}.intro h1{font-size:clamp(32px,7vw,43px)}.board-mark{left:6%;top:72%;writing-mode:horizontal-tb;font-size:6px}.board-mark small{font-size:5px}.expansion-slot{left:36%;top:15%;width:28%;height:14px}.capacitors{left:11%;top:38%;gap:7px;flex-direction:row}.capacitors i{width:10px;height:10px}.heatsink{left:34%;top:57%;width:30%;height:19px}.field-message{bottom:35px;font-size:6px;letter-spacing:.6px;white-space:normal}.node-label{font-size:6px;letter-spacing:.4px;top:98%}.chip-name{font-size:13px}.field-bottom{font-size:6px}.screw{width:9px;height:9px}.s1,.s3{left:19px}.s2,.s4{right:19px}.s1,.s2{top:47px}.s3,.s4{bottom:49px}}
+
+/* Residual heat remains visible while a disconnected module cools. */
+.node.warm .chip{filter:drop-shadow(0 0 calc(var(--energy)*12px) color-mix(in srgb,var(--node-color) 40%,transparent))}
+.node.warm .chip .pins{stroke:var(--node-color);opacity:calc(.5 + var(--energy)*.5)}
+.node.warm .chip .inner{fill:color-mix(in srgb,var(--node-color) 9%,#0b1416)}

@@ -6,13 +6,13 @@ const garden = $('garden');
 const cursor = $('cursor');
 const dialog = $('help-dialog');
 const plants = [
-  {x:48,y:41,size:166,hue:'#69b8b9',type:0,name:'CPU',sub:'CORE / 01',mx:50,my:40},
-  {x:19,y:28,size:119,hue:'#6e9d98',type:1,name:'RAM',sub:'BANK / 02',mx:18,my:22},
-  {x:19,y:62,size:119,hue:'#6e9d98',type:2,name:'RAM',sub:'BANK / 03',mx:18,my:55},
-  {x:77,y:43,size:151,hue:'#80b8bb',type:3,name:'GPU',sub:'UNIT / 04',mx:82,my:40},
-  {x:48,y:72,size:102,hue:'#8bada3',type:4,name:'BIOS',sub:'ROM / 05',mx:50,my:72},
-  {x:76,y:18,size:100,hue:'#a5a683',type:5,name:'PWR',sub:'RAIL / 06',mx:82,my:18},
-  {x:85,y:74,size:102,hue:'#74999f',type:6,name:'I/O',sub:'BUS / 07',mx:82,my:72},
+  {x:48,y:41,size:166,hue:'#69b8b9',type:0,mx:50,my:40},
+  {x:19,y:28,size:119,hue:'#6e9d98',type:1,mx:18,my:22},
+  {x:19,y:62,size:119,hue:'#6e9d98',type:2,mx:18,my:55},
+  {x:77,y:43,size:151,hue:'#80b8bb',type:3,mx:82,my:40},
+  {x:48,y:72,size:102,hue:'#8bada3',type:4,mx:50,my:72},
+  {x:76,y:18,size:100,hue:'#a5a683',type:5,mx:82,my:18},
+  {x:85,y:74,size:102,hue:'#74999f',type:6,mx:82,my:72},
 ];
 const pad = (n) => String(n).padStart(2,'0');
 let inputMode = 'pointer';
@@ -21,13 +21,13 @@ let physicalNode = null;
 let touchNode = null;
 let previousLock = null;
 let previousActive = null;
+let inspectedIndex = null;
 let lastRelease = -Infinity;
 let suppressFocus = false;
 let hidden = false;
 let helpReturnFocus = null;
 
 function chip(type) {
-  const p=plants[type];
   const pins=Array.from({length:8},(_,i)=>{
     const n=29+i*9;
     return `<path d="M${n} 12v12M${n} 96v12M12 ${n}h12M96 ${n}h12"/>`;
@@ -35,14 +35,14 @@ function chip(type) {
   const die=type===1||type===2
     ? Array.from({length:3},(_,i)=>`<rect x="35" y="${32+i*20}" width="50" height="15" rx="1"/><path d="M39 ${38+i*20}h14"/>`).join('')
     : `<rect x="36" y="36" width="48" height="48" rx="1"/><path d="M40 43h8m-8 5h5M72 77h8m-5-5h5"/>`;
-  return `<span class="aura"></span><svg class="chip" viewBox="0 0 120 120" aria-hidden="true"><g class="pins">${pins}</g><rect class="socket" x="16" y="16" width="88" height="88" rx="3"/><path class="package" d="M27 24h66l3 3v66l-3 3H27l-3-3V27Z"/><g class="inner">${die}</g><path class="outer" d="M24 36V24h12M84 24h12v12M96 84v12H84M36 96H24V84"/><circle class="core" cx="31" cy="31" r="2"/><text class="chip-name" x="60" y="59" text-anchor="middle">${p.name}</text><text class="chip-sub" x="60" y="70" text-anchor="middle">${type===0?'PROCESSOR':type===3?'GRAPHICS':'MODULE'}</text><path class="etch" d="M34 89h22m4 0h5m5 0h15"/></svg>`;
+  return `<span class="aura"></span><svg class="chip" viewBox="0 0 120 120" aria-hidden="true"><g class="pins">${pins}</g><rect class="socket" x="16" y="16" width="88" height="88" rx="3"/><path class="package" d="M27 24h66l3 3v66l-3 3H27l-3-3V27Z"/><g class="inner">${die}</g><path class="outer" d="M24 36V24h12M84 24h12v12M96 84v12H84M36 96H24V84"/><circle class="core" cx="31" cy="31" r="2"/><path class="etch" d="M34 89h22m4 0h5m5 0h15"/></svg>`;
 }
 
 const nodeButtons = plants.map((plant,i)=>{
   const button=document.createElement('button');
   button.className='node';button.dataset.index=i;
-  button.setAttribute('aria-label',`Chip ${pad(i+1)}. Focus to feed; leave before 3 seconds to avoid overload.`);
-  button.innerHTML=chip(plant.type)+`<span class="node-label">${plants[i].sub}</span>`;
+  button.setAttribute('aria-label',`Chip ${pad(i+1)}. Focus to supply power. Residual load resumes on return; disconnect to cool.`);
+  button.innerHTML=chip(plant.type);
   $('nodes').append(button);
   button.addEventListener('pointerenter',e=>{
     if(e.pointerType==='touch')return;
@@ -140,21 +140,21 @@ document.addEventListener('focusin',e=>{
 });
 
 function clearGarden(){
-  engine.reset(performance.now());lastRelease=-Infinity;previousLock=null;previousActive=null;
+  engine.reset(performance.now());lastRelease=-Infinity;previousLock=null;previousActive=null;inspectedIndex=null;
   nodeButtons.forEach(b=>b.dataset.state='');
   announce('System reset. All seven modules are ready for input.');
 }
 $('reset-button').addEventListener('click',clearGarden);
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{
   if(!engine.setMode(button.dataset.mode,performance.now()))return;
-  previousLock=null;previousActive=null;lastRelease=-Infinity;
+  previousLock=null;previousActive=null;inspectedIndex=null;lastRelease=-Infinity;
   document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
   const trap=engine.mode==='trap';
-  $('mode-description').innerHTML=trap?'<strong>Thermal protection active.</strong> Stay for 3 seconds and the system locks your cursor for 4.':'<strong>Unrestricted power.</strong> Keep a module powered for as long as you like. No lockout.';
+  $('mode-description').innerHTML=trap?'<strong>Thermal protection active.</strong> Load carries over between visits. Reach 100% and the system locks for 4 seconds.':'<strong>Unrestricted power.</strong> Keep a module powered for as long as you like. No lockout.';
   $('mode-label').textContent=trap?'LIMITS CREATE RHYTHM':'ATTENTION WITHOUT LIMITS';
-  $('meter-end').textContent=trap?'CRITICAL / 3s':'CAPACITY / ∞';
+  $('meter-end').textContent=trap?'CRITICAL / 100%':'CAPACITY / ∞';
   nodeButtons.forEach(b=>b.dataset.state='');
-  announce(`${trap?'Overload Trap':'Infinite Capacity'} mode. Board and session counts reset. ${trap?'Leave each chip before 3 seconds to avoid a 4-second trap.':'Flowers never trap you.'}`);
+  announce(`${trap?'Overload Trap':'Infinite Capacity'} mode. Board and session counts reset. ${trap?'Disconnect to cool. Returning resumes the remaining load. At 100%, a 4-second lock begins.':'Chips never trap you.'}`);
 }));
 
 function openHelp(){
@@ -203,22 +203,23 @@ function frame(now){
   }
   previousLock=locked;
   const active=engine.activeIndex;
-  if(active!==null&&active!==previousActive&&locked===null)announce(`Chip ${pad(active+1)} absorbing. ${engine.mode==='trap'?'Leave before 3 seconds.':'Infinite capacity.'}`);
+  if(active!==null&&active!==previousActive&&locked===null)announce(`Chip ${pad(active+1)} absorbing. ${engine.mode==='trap'?'Residual load resumes. Disconnect to cool before 100%.':'Infinite capacity.'}`);
   previousActive=active;
-  let energy=active!==null?engine.nodes[active].energy:0;
-  if(engine.mode==='infinite'&&active!==null)energy=.6+energy*.4;
+  if(active!==null)inspectedIndex=active;
+  const energy=inspectedIndex!==null?engine.nodes[inspectedIndex].energy:0;
+  const cooling=active===null&&energy>0;
   const activeColor=locked!==null?'#fa5367':engine.mode==='infinite'?'#71ead8':colorAt(energy);
   engine.nodes.forEach((node,i)=>{
     const button=nodeButtons[i];
-    button.className=`node ${node.state}`;
-    button.style.setProperty('--energy',node.state==='absorbing'&&engine.mode==='infinite'?.6+node.energy*.4:node.energy);
-    const color=node.state==='overload'?'#fa5367':node.state==='absorbing'?(engine.mode==='infinite'?'#71ead8':colorAt(node.energy)):node.state==='released'?'#717581':node.energy>.05?'#9bc7c1':plants[i].hue;
+    button.className=`node ${node.state}${node.state==='idle'&&node.energy>0?' warm':''}`;
+    button.style.setProperty('--energy',node.energy);
+    const color=node.state==='overload'?'#fa5367':node.state==='absorbing'?(engine.mode==='infinite'?'#71ead8':colorAt(node.energy)):node.state==='released'?'#717581':node.energy>0?(engine.mode==='infinite'?'#71ead8':colorAt(node.energy)):plants[i].hue;
     button.style.setProperty('--node-color',color);
     const trace=document.querySelector(`[data-trace="${i}"]`);
     if(trace){trace.style.stroke=color;trace.style.opacity=node.state==='absorbing'||node.state==='overload'?'0.8':'0.24';}
     if(button.dataset.state!==node.state){
       button.dataset.state=node.state;
-      button.setAttribute('aria-label',`Chip ${pad(i+1)}, ${node.state}. ${engine.mode==='trap'?'Continuous attention overloads at 3 seconds.':'Infinite capacity; no trap.'}`);
+      button.setAttribute('aria-label',`Chip ${pad(i+1)}, ${node.state}. ${engine.mode==='trap'?'Load carries over and cools while away. Overload at 100%.':'Infinite capacity; no trap.'}`);
     }
   });
   garden.classList.toggle('trapped',locked!==null);
@@ -228,19 +229,19 @@ function frame(now){
     cursor.querySelector('span').textContent=`LOCKED ${(engine.remaining(now)/1000).toFixed(1)}s`;
   }else{cursor.style.left=`${pointer.x}px`;cursor.style.top=`${pointer.y}px`;cursor.querySelector('span').textContent='';}
   const recent=now-lastRelease<2200;
-  $('state-name').textContent=locked!==null?'Thermal lockout':active!==null?'Power flowing':recent?'System recovered':'System standby';
-  $('state-detail').textContent=locked!==null?`${plants[locked].name} / OVERLOAD`:active!==null?`${plants[active].name} / CONNECTED`:recent?'COOLDOWN COMPLETE':'SYSTEM IDLE';
-  $('state-icon').style.color=active!==null?activeColor:recent?'#8f969d':'#75acb5';
+  $('state-name').textContent=locked!==null?'Thermal lockout':active!==null?'Power flowing':cooling?'Cooling down':recent?'System recovered':'System standby';
+  $('state-detail').textContent=locked!==null?`MODULE ${pad(locked+1)} / OVERLOAD`:active!==null?`MODULE ${pad(active+1)} / CONNECTED`:cooling?`MODULE ${pad(inspectedIndex+1)} / COOLING`:recent?'COOLDOWN COMPLETE':'SYSTEM IDLE';
+  $('state-icon').style.color=energy>0?activeColor:recent?'#8f969d':'#75acb5';
   $('energy-percent').innerHTML=`${Math.round(energy*100)}<span>%</span>`;
   $('energy-meter').style.setProperty('--meter-color',activeColor);
   meterBars.forEach((bar,i)=>bar.classList.toggle('filled',i<Math.round(energy*20)));
   $('timer-label').textContent=locked!==null?'RELEASE IN':'DWELL TIME';
   $('dwell-value').innerHTML=`${((locked!==null?engine.remaining(now):engine.dwell(now))/1000).toFixed(2)}<span>s</span>`;
   $('dwell-value').style.color=locked!==null?'#fa606b':'';
-  $('monitor-note').innerHTML=locked!==null?'Thermal limit exceeded.<br>Cooling cycle in progress.':engine.mode==='infinite'?'Continuous power enabled.<br>Thermal lockout is bypassed.':'Your cursor supplies power.<br>Excess load triggers a lockout.';
+  $('monitor-note').innerHTML=locked!==null?'Thermal limit exceeded.<br>Cooling cycle in progress.':engine.mode==='infinite'?'Continuous power enabled.<br>Thermal lockout is bypassed.':'Load resumes where you left it.<br>Disconnect to let it cool.';
   $('feed-count').textContent=pad(engine.stats.feeds);
   $('trap-count').textContent=pad(engine.stats.overloads);
-  $('field-message').lastElementChild.textContent=locked!==null?`THERMAL LOCK / Release in ${(engine.remaining(now)/1000).toFixed(1)}s · Esc to let go`:active!==null?(engine.mode==='infinite'?'CONTINUOUS POWER / NO THERMAL LIMIT':energy>.7?'CRITICAL LOAD / DISCONNECT TO AVOID LOCKOUT':'POWER TRANSFER ACTIVE / MONITOR THE LOAD'):recent?'COOLDOWN COMPLETE / BUS RELEASED':'SYSTEM READY / HOVER OVER A MODULE';
+  $('field-message').lastElementChild.textContent=locked!==null?`THERMAL LOCK / Release in ${(engine.remaining(now)/1000).toFixed(1)}s · Esc to let go`:active!==null?(engine.mode==='infinite'?'CONTINUOUS POWER / NO THERMAL LIMIT':energy>.7?'CRITICAL LOAD / DISCONNECT TO AVOID LOCKOUT':'POWER TRANSFER ACTIVE / MONITOR THE LOAD'):cooling?'RESIDUAL LOAD / COOLING WHILE DISCONNECTED':recent?'COOLDOWN COMPLETE / BUS RELEASED':'SYSTEM READY / HOVER OVER A MODULE';
   if(!hidden)requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

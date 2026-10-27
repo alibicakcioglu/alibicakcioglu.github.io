@@ -21,20 +21,68 @@ test('continuous dwell locks at exactly 3 seconds and releases at exactly 7 seco
   assert.equal(garden.nodes[0].energy, 0);
 });
 
-test('leaving before threshold breaks continuous dwell and preserves fading glow', () => {
+test('70% load survives an immediate return and needs only the remaining 900ms', () => {
   const garden = new GardenEngine();
   garden.enter(0, 0);
-  garden.leave(0, 2900);
-  assert.equal(garden.nodes[0].state, 'idle');
-  assert.ok(garden.nodes[0].energy > 0.9);
-  garden.tick(5900);
-  assert.ok(Math.abs(garden.nodes[0].energy - 2900 / 3000 / 2) < 0.00001);
-  garden.enter(0, 6000);
-  garden.tick(8999);
+  garden.leave(0, 2100);
+  assert.equal(garden.nodes[0].energy, 0.7);
+  garden.enter(0, 2100);
+  assert.equal(garden.nodes[0].energy, 0.7);
+  garden.tick(2999);
   assert.equal(garden.lockedIndex, null);
-  garden.tick(9000);
+  garden.tick(3000);
   assert.equal(garden.lockedIndex, 0);
-  assert.equal(garden.stats.overloads, 1);
+  assert.equal(garden.lockedAt, 3000);
+  garden.tick(6999);
+  assert.equal(garden.nodes[0].energy, 1);
+  garden.tick(7000);
+  assert.equal(garden.nodes[0].energy, 0);
+});
+
+test('70% cools to 60% during 600ms away and resumes from 60%', () => {
+  const garden = new GardenEngine();
+  garden.enter(0, 0);
+  garden.leave(0, 2100);
+  garden.tick(2700);
+  assert.ok(Math.abs(garden.nodes[0].energy - 0.6) < 1e-10);
+  garden.enter(0, 2700);
+  assert.ok(Math.abs(garden.nodes[0].energy - 0.6) < 1e-10);
+  garden.tick(3300);
+  assert.ok(Math.abs(garden.nodes[0].energy - 0.8) < 1e-10);
+  garden.tick(3900);
+  assert.equal(garden.lockedIndex, 0);
+  assert.equal(garden.lockedAt, 3900);
+});
+
+test('each module cools independently and repeated visits retain residual energy', () => {
+  const garden = new GardenEngine();
+  garden.enter(0, 0);
+  garden.enter(1, 2100);
+  garden.enter(0, 2700);
+  assert.ok(Math.abs(garden.nodes[0].energy - 0.6) < 1e-10);
+  assert.ok(Math.abs(garden.nodes[1].energy - 0.2) < 1e-10);
+  garden.leave(0, 3000);
+  assert.ok(Math.abs(garden.nodes[0].energy - 0.7) < 1e-10);
+  garden.enter(0, 3300);
+  assert.ok(Math.abs(garden.nodes[0].energy - 0.65) < 1e-10);
+  assert.ok(Math.abs(garden.nodes[1].energy - 0.1) < 1e-10);
+  garden.leave(0, 3300);
+  garden.tick(100000);
+  assert.equal(garden.nodes[0].energy, 0);
+  assert.equal(garden.nodes[1].energy, 0);
+});
+
+test('a delayed tick observes the earlier overload deadline of a warm module', () => {
+  const garden = new GardenEngine();
+  garden.enter(0, 0);
+  garden.leave(0, 2100);
+  garden.enter(0, 2700);
+  garden.tick(7000);
+  assert.equal(garden.lockedAt, 3900);
+  assert.equal(garden.remaining(7000), 900);
+  garden.tick(7900);
+  assert.equal(garden.nodes[0].state, 'released');
+  assert.equal(garden.nodes[0].energy, 0);
 });
 
 test('exact-threshold leave cannot evade the trap', () => {

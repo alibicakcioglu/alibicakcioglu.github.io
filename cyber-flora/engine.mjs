@@ -28,6 +28,7 @@ export class GardenEngine {
     this._fades = this.nodes.map(() => ({ since: time, energy: 0 }));
     this.activeIndex = null;
     this.activeSince = null;
+    this._entryEnergy = 0;
     this.lockedIndex = null;
     this.lockedAt = null;
     this._blockedIndex = null;
@@ -51,8 +52,8 @@ export class GardenEngine {
     this._blockedIndex = null;
     this.activeIndex = index;
     this.activeSince = time;
+    this._entryEnergy = this.nodes[index].energy;
     this.nodes[index].state = 'absorbing';
-    this.nodes[index].energy = 0;
     this.stats.feeds += 1;
     return true;
   }
@@ -76,17 +77,18 @@ export class GardenEngine {
     for (let index = 0; index < this.count; index += 1) {
       if (this.nodes[index].state !== 'idle') continue;
       const fade = this._fades[index];
-      this.nodes[index].energy = fade.energy * Math.max(0, 1 - (time - fade.since) / FADE_MS);
+      this.nodes[index].energy = Math.max(0, fade.energy - (time - fade.since) / FADE_MS);
     }
 
     if (this.activeIndex !== null && this.lockedIndex === null) {
       const elapsed = time - this.activeSince;
       const node = this.nodes[this.activeIndex];
-      node.energy = Math.min(1, elapsed / ABSORPTION_MS);
+      node.energy = Math.min(1, this._entryEnergy + elapsed / ABSORPTION_MS);
+      const overloadAt = this.activeSince + (1 - this._entryEnergy) * ABSORPTION_MS;
       this.stats.bestDwell = Math.max(this.stats.bestDwell, this.mode === 'trap' ? Math.min(elapsed, ABSORPTION_MS) : elapsed);
-      if (this.mode === 'trap' && elapsed >= ABSORPTION_MS) {
+      if (this.mode === 'trap' && time >= overloadAt) {
         this.lockedIndex = this.activeIndex;
-        this.lockedAt = this.activeSince + ABSORPTION_MS;
+        this.lockedAt = overloadAt;
         node.state = 'overload';
         node.energy = 1;
         this.stats.overloads += 1;
