@@ -1,4 +1,4 @@
-import { GardenEngine } from './engine.mjs';
+import { GardenEngine } from './engine.mjs?v=heat-2';
 
 const $ = (id) => document.getElementById(id);
 const engine = new GardenEngine(7);
