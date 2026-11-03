@@ -8,6 +8,10 @@
 
 Korneri atmadan önce ne kadar bekleyeceğine ve topu nereye göndereceğine sen karar verirsin. İkinci turda ceza sahasındaki oyuncuyu yönetirsin. Köşedeki oyuncu, ilk turdaki bekleyişini ve ortanı tekrarlar. Topa yetişmek için boş alana koş ve vuruşunu zamanla.
 
+1. Sahada topun düşmesini istediğin noktaya tıkla veya dokun. Gecikmeli bir orta için basılı tut, hedefini seç ve bırak.
+2. Topun ilk uçuşunu izledikten sonra **W, A, S, D** ile forveti hareket ettir. İlk yön tuşuyla koşu ve kayıt birlikte başlar. Dokunmatik ekranda koşmak istediğin noktaya dokun.
+3. Top alçalınca **Boşluk** tuşuyla veya sahadaki şut düğmesiyle vur. Pozisyon bitince aynı ortayı tekrar deneyebilir ya da yeni bir orta açabilirsin.
+
 ## Temporality
 
 [IMA Lab · 04 Temporality](https://mertseven.com/ima/lab/index.html#premise=04&section=remix) için bir zamanlama deneyi. Ghost Chase'teki geçmiş hareketi yeniden oynatma kuralı burada iki futbolcunun paslaşmasını sağlar. İlk turda beklediğin her saniye ikinci turda koşmak için kazandığın bir saniyedir.

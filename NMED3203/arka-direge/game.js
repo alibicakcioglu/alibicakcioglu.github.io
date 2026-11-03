@@ -11,14 +11,14 @@
   const ink = '#132d23', paper = '#fff6d6', orange = '#ff753c', ice = '#a8e8df';
   const pathKeys = new Set();
   const copy = {
-    ready: ['Korner senin', 'İlk düdük için başla. Ortanı kaydet, sonra ceza sahasına geç.'],
-    corner: ['Ortanı aç', 'Hedefe dokun veya oklarla nişan alıp boşluğa bas. Beklediğin süre de kayda girer.'],
-    flight: ['Top havada', 'Topun düştüğü yeri izle. Birazdan oraya sen koşacaksın.'],
-    review: ['Şimdi sıra forvette', 'Hazır olduğunda koşuyu başlat. Köşedeki sen, aynı anda aynı ortayı açacak.'],
-    run: ['Ortana yetiş', 'Hedefe dokunarak veya oklarla koş. Top yaklaşınca Şut’a ya da boşluğa bas.'],
+    ready: ['Korner senin', 'Hedefe basıp bırak. Beklemek için basılı tut.'],
+    corner: ['Ortanı aç', 'Sürükleyip bırak veya oklarla nişan alıp boşluğa bas.'],
+    flight: ['Top havada', 'Düşüş noktasını izle. Birazdan oraya koşacaksın.'],
+    review: ['Şimdi sıra forvette', 'WASD ile koşuya başla veya gideceğin yere dokun.'],
+    run: ['Ortana yetiş', 'WASD ile koş, boşlukla vur. Telefonda dokunarak koş.'],
     shot: ['Tek vuruş!', 'Top kaleye gidiyor.'],
-    goal: ['Gooool!', 'Asist de senin, gol de. Aynı ortaya tekrar koşabilir veya yeni bir orta açabilirsin.'],
-    miss: ['Top kaçtı', 'Önce düşüş noktasına koş, top alçalınca vur. Aynı ortayı tekrar deneyebilirsin.']
+    goal: ['Gooool!', 'Asist de senin, gol de.'],
+    miss: ['Top kaçtı', 'Düşüş noktasına koş, top alçalınca vur.']
   };
   let phase = 'ready', time = 0, goals = 0, attempts = 0;
   let aim = { ...initialAim }, runner = { ...spawn }, target = null;
@@ -71,11 +71,11 @@
     osc.start(start); osc.stop(end);
   }
 
-  function start() {
+  function start(recording = true) {
     record = null; shot = null; target = null; dragging = null;
     runner = { ...spawn }; aim = { ...initialAim }; moving = false;
     heldShotUntil = -1; pathKeys.clear();
-    setPhase('corner', true); focus();
+    setPhase(recording ? 'corner' : 'ready', true); focus();
   }
 
   function playableAim(p) {
@@ -154,6 +154,9 @@
     if (!e.isPrimary || e.button !== 0) return;
     focus();
     const p = position(e);
+    // The first gesture both starts the clock and selects the cross.
+    if (phase === 'ready') start();
+    if (phase === 'review') replay();
     if (phase === 'corner') {
       dragging = e.pointerId;
       canvas.setPointerCapture(e.pointerId);
@@ -162,8 +165,6 @@
       const ball = ballAt(time);
       if (distance(p, ball) < 48 && distance(ball, runner) < 75 && time >= record.kick) tryShot();
       else target = { x: clamp(p.x, left + 10, right - 10), y: clamp(p.y, top + 10, bottom - 10) };
-    } else if (phase === 'ready' || phase === 'review') {
-      act();
     }
   });
   canvas.addEventListener('pointermove', e => {
@@ -182,8 +183,14 @@
   };
   document.addEventListener('keydown', e => {
     if (e.altKey || e.ctrlKey || e.metaKey || (e.target !== canvas && e.target !== document.body)) return;
+    if (directions[e.code] && !e.repeat) {
+      if (phase === 'ready') start();
+      if (phase === 'review') replay();
+    }
     if (directions[e.code] && (phase === 'corner' || phase === 'run')) {
       e.preventDefault(); target = null; pathKeys.add(e.code);
+    } else if (e.code === 'KeyR' && !e.repeat && (phase === 'goal' || phase === 'miss')) {
+      e.preventDefault(); start(false);
     } else if (e.code === 'Space' || e.code === 'Enter') {
       e.preventDefault(); if (!e.repeat) act();
     }
@@ -343,8 +350,6 @@
     const receiving = ['review','run','shot','goal','miss'].includes(phase);
     const preview = phase === 'ready' || phase === 'corner';
     const point = record?.aim ?? aim;
-    label('AD / MAHALLE SAHASI',25,22,'#d0dfba');
-    label(receiving ? '02 / KOŞU' : '01 / KORNER',875,22,receiving ? ice : '#f6b68d','right');
     if (preview || phase === 'review') {
       ctx.beginPath(); ctx.moveTo(corner.x,corner.y);
       ctx.quadraticCurveTo((corner.x+point.x)/2-28,(corner.y+point.y)/2-22,point.x,point.y);

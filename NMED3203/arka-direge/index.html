@@ -6,69 +6,51 @@
   <meta name="theme-color" content="#f6f4eb">
   <title>Arka Direğe! · Kendi ortana gol at</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23172d23'/%3E%3Cpath d='M12 48C18 20 36 14 52 15M36 11l16 4-7 14' fill='none' stroke='%23d6ef90' stroke-width='6'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="game.js"></script>
+  <link rel="stylesheet" href="style.css?v=2">
+  <script defer src="game.js?v=2"></script>
 </head>
 <body>
   <header class="mast wrap">
-    <div class="brand">
-      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="6" fill="currentColor"/><path d="M6 24c4-10 8-15 19-15m-8-2 8 2-3 8" stroke="#d6ef90" stroke-width="2.5"/></svg>
-      <span>MAHALLE SAHASI</span>
-    </div>
-    <span class="mast-note">ETKİLEŞİM DENEYİ <b>/</b> 04</span>
+    <div class="brand"><span class="brand-mark" aria-hidden="true">↗</span> MAHALLE SAHASI</div>
+    <span>TEMPORALITY REMIX <b>/</b> 04</span>
   </header>
   <main class="wrap">
     <div class="intro">
-      <div>
-        <div class="eyebrow"><span class="dash"></span> TEMPORALITY REMIX</div>
-        <h1>Arka Direğe<span>!</span></h1>
-      </div>
-      <p>Korneri sen kullan. Ceza sahasına geç,<br class="desktop"> kendi ortana gol at.</p>
+      <h1>Arka Direğe<span>!</span></h1>
+      <p>Korneri sen kullan. Kendi ortana gol at.</p>
     </div>
-    <section class="ground" aria-label="Oyun">
-      <div class="field-side">
-        <div class="field-head">
-          <div class="field-left"><h2><i class="live-dot"></i> SAHA</h2>
-            <button id="sound" class="sound" type="button" aria-label="Oyun sesi" aria-pressed="false"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m3 7 3 0 5-4v14l-5-4H3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path class="off" d="m14 8 4 4m0-4-4 4" stroke="currentColor" stroke-width="1.6"/><path class="on" d="M14 6q4 4 0 8" stroke="currentColor" stroke-width="1.6"/></svg><span>Ses kapalı</span></button></div>
-          <span class="field-score">GOL <strong id="goals">00</strong><i></i>DENEME <strong id="attempts">00</strong></span>
-        </div>
-        <canvas id="pitch" width="900" height="590" tabindex="0" aria-label="Futbol sahası" aria-describedby="instruction controls-text">Bu oyunu oynamak için canvas destekleyen bir tarayıcı kullan.</canvas>
-        <div class="field-foot">
-          <div class="legend"><i class="player-symbol"></i> Şimdiki sen <i class="ghost-symbol"></i> Önceki sen</div>
-          <span><i class="clock-symbol"></i><b id="live-time">0,0</b> sn</span>
-        </div>
+    <section class="ground" aria-label="Oyun sahası">
+      <canvas id="pitch" width="900" height="590" tabindex="0" aria-label="Futbol sahası" aria-describedby="instruction controls-text">Bu oyunu oynamak için canvas destekleyen bir tarayıcı kullan.</canvas>
+      <div class="top-hud">
+        <div class="score"><span><i class="live-dot"></i> GOL <strong id="goals">00</strong></span><span>DENEME <strong id="attempts">00</strong></span></div>
+        <button id="sound" class="sound" type="button" aria-label="Oyun sesi" aria-pressed="false"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m3 7 3 0 5-4v14l-5-4H3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path class="off" d="m14 8 4 4m0-4-4 4" stroke="currentColor" stroke-width="1.6"/><path class="on" d="M14 6q4 4 0 8" stroke="currentColor" stroke-width="1.6"/></svg><span>Ses kapalı</span></button>
       </div>
-      <aside class="bench" aria-label="Oyun kontrolleri">
-        <div class="stage" aria-live="polite">
-          <span class="eyebrow"><span class="dash"></span> <span id="phase-label">BAŞLAMA DÜDÜĞÜ</span></span>
-          <h2 id="phase-title">Sahaya çık.</h2>
-          <p id="instruction">Önce korneri kullanacaksın. Sonra forvete geçip kendi ortanı karşılayacaksın.</p>
+      <div class="bottom-hud">
+        <div class="stage" aria-live="polite" aria-atomic="true">
+          <span id="phase-label" class="phase">01 / KORNER</span>
+          <h2 id="phase-title">Korner senin</h2>
+          <p id="instruction">Sahada hedefe bas, bekle ve bırak.</p>
         </div>
         <div class="actions">
-          <button id="action" class="primary" type="button"><span id="action-label">Oyuna başla</span><span aria-hidden="true" class="arrow">→</span></button>
-          <button id="new-cross" class="secondary" type="button" hidden>Yeni orta kaydet</button>
+          <button id="action" class="primary" type="button" hidden><span id="action-label">Koşuya başla</span><span aria-hidden="true">→</span></button>
+          <button id="new-cross" class="secondary" type="button" hidden>Yeni orta</button>
         </div>
-        <section class="timing" aria-label="Zaman diyagramı">
-          <div class="timing-head"><h3>ZAMAN ÇİZELGESİ</h3><span aria-hidden="true">t / sn</span></div>
-          <div class="track" aria-hidden="true">
-            <span class="origin"></span><i id="kick-marker" hidden></i><i id="arrival-marker" hidden></i><i id="now-marker"></i>
-          </div>
-          <dl>
-            <div><dt><i class="key-now"></i> Şimdiki hareket</dt><dd id="now-time">0,0 sn</dd></div>
-            <div><dt><i class="key-kick"></i> Kaydedilen vuruş</dt><dd id="kick-time">—</dd></div>
-            <div><dt><i class="key-arrival"></i> Topun varışı</dt><dd id="arrival-time">—</dd></div>
-          </dl>
-        </section>
-      </aside>
-    </section>
-    <details class="help">
-      <summary>Nasıl oynanır?<span aria-hidden="true">+</span></summary>
-      <div id="controls-text">
-        <div><h3>01 · Ortanı kaydet</h3><p>Sahada hedefe dokun ya da oraya sürükleyip bırak. Klavyede yön tuşlarıyla nişan al, boşlukla vur. Vuruştan önceki bekleyişin de kayda girer.</p></div>
-        <div><h3>02 · Topa koş</h3><p>Koşuyu başlat. Sahada gitmek istediğin yere dokun veya yön tuşlarıyla koş. Köşedeki oyuncu ortanı aynı anda tekrarlar.</p></div>
-        <div><h3>03 · Tek vuruş</h3><p>Top sana yaklaşınca şut düğmesine veya boşluk tuşuna bas. Aynı ortayı tekrar deneyebilir ya da yeni bir orta kaydedebilirsin.</p></div>
       </div>
-    </details>
+    </section>
+    <section class="timing" aria-label="Zaman diyagramı">
+      <h2>Zaman çizelgesi</h2>
+      <div class="track" aria-hidden="true"><i id="kick-marker" hidden></i><i id="arrival-marker" hidden></i><i id="now-marker"></i></div>
+      <dl>
+        <div><dt><i class="key-now"></i> Şimdiki hareket</dt><dd id="now-time">0,0 sn</dd></div>
+        <div><dt><i class="key-kick"></i> Kaydedilen vuruş</dt><dd id="kick-time">—</dd></div>
+        <div><dt><i class="key-arrival"></i> Topun varışı</dt><dd id="arrival-time">—</dd></div>
+      </dl>
+    </section>
+    <section class="guide" id="controls-text" aria-label="Oyun kılavuzu">
+      <p><b>01 · Korner</b> Hedefe tıkla veya sürükleyip bırak. Basılı tuttuğun süre ikinci turda koşmak için kazandığın süredir. Klavyede oklarla nişan alıp boşlukla vurabilirsin.</p>
+      <p><b>02 · Koşu</b> Forvete geçince W, A, S, D ile koş. Telefonda koşmak istediğin yere dokun. Köşedeki oyuncu ortanı aynı anda tekrarlar.</p>
+      <p><b>03 · Şut</b> Top yaklaşınca boşluk tuşuna bas veya sahadaki şut düğmesine dokun. Dilersen aynı ortaya tekrar koş.</p>
+    </section>
     <noscript>Oynamak için tarayıcında JavaScript’i etkinleştir.</noscript>
   </main>
   <footer class="wrap"><span>ARKA DİREĞE!</span><span>04 / TEMPORALITY</span></footer>
@@ -76,11 +58,11 @@
     (() => {
       const byId = id => document.getElementById(id);
       const stages = {
-        ready: ['BAŞLAMA DÜDÜĞÜ', 'Oyuna başla'],
-        corner: ['01 / ORTANI KAYDET', 'Ortayı aç'],
+        ready: ['01 / KORNER', ''],
+        corner: ['01 / KORNER', ''],
         flight: ['01 / TOP HAVADA', 'Orta kaydediliyor'],
-        review: ['DEVRE ARASI', 'Koşuyu başlat'],
-        run: ['02 / ORTANI KARŞILA', 'Şut çek'],
+        review: ['02 / FORVET', 'Koşuya başla'],
+        run: ['02 / FORVET', 'Şut çek'],
         shot: ['02 / ŞUT', 'Şut çekildi'],
         goal: ['SONUÇ / GOL', 'Aynı ortayı dene'],
         miss: ['SONUÇ / KAÇTI', 'Aynı ortayı dene']
@@ -97,11 +79,10 @@
         if (title) set('phase-title', title);
         if (hint) set('instruction', hint);
         set('action-label', action);
-        byId('action').disabled = phase === 'shot' || phase === 'flight';
-        byId('new-cross').hidden = !['goal', 'miss', 'review', 'run'].includes(phase);
+        byId('action').hidden = !['review', 'run', 'goal', 'miss'].includes(phase);
+        byId('new-cross').hidden = !['goal', 'miss', 'review'].includes(phase);
         set('goals', String(goals || 0).padStart(2, '0'));
         set('attempts', String(attempts || 0).padStart(2, '0'));
-        set('live-time', seconds(time));
         set('now-time', seconds(time) + ' sn');
         set('kick-time', kickTime == null ? '—' : seconds(kickTime) + ' sn');
         set('arrival-time', arrivalTime == null ? '—' : seconds(arrivalTime) + ' sn');
@@ -118,13 +99,14 @@
         window.ArkaDirege.setSound(enabled);
         button.setAttribute('aria-pressed', String(enabled));
         button.querySelector('span').textContent = enabled ? 'Ses açık' : 'Ses kapalı';
+        byId('pitch').focus({preventScroll:true});
       });
       byId('action').addEventListener('click', () => {
         window.ArkaDirege.act();
         byId('pitch').focus({preventScroll:true});
       });
       byId('new-cross').addEventListener('click', () => {
-        window.ArkaDirege.start();
+        window.ArkaDirege.start(false);
         byId('pitch').focus({preventScroll:true});
       });
     })();
