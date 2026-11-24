@@ -1,47 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phone Selector</title>
-    <!-- Link to Tailwind CSS CDN for responsive styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Link to custom CSS file -->
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ali Eren Bıçakçıoğlu · Yapım aşamasında</title>
+  <style>
+    body { font-family: ui-monospace, Menlo, monospace; max-width: 40rem; margin: 3rem auto; padding: 0 1.25rem; line-height: 1.6; color: #161615; background: #f4f1ea; }
+    h1 { font-size: 1.4rem; margin-bottom: .25rem; }
+    a { color: inherit; }
+    li { margin: .4rem 0; }
+    .muted { opacity: .65; }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-inter">
-    <div id="app" class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Phone Selector!</h1>
-
-        <!-- Start Screen -->
-        <div id="start-screen" class="space-y-4">
-            <p class="text-lg text-gray-600 mb-6">Unsure about which phone to choose? Let us help you find the best fit based on your preferences!</p>
-            <button id="start-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
-                Start
-            </button>
-        </div>
-
-        <!-- Question Screen (hidden by default) -->
-        <div id="question-screen" class="hidden space-y-6">
-            <p id="question-text" class="text-xl font-semibold text-gray-700"></p>
-            <div id="options-container" class="space-y-4">
-                <!-- Buttons will be dynamically inserted here by JavaScript -->
-            </div>
-            <p id="error-message" class="text-red-500 hidden mt-4"></p>
-        </div>
-
-        <!-- Result Screen (hidden by default) -->
-        <div id="result-screen" class="hidden space-y-6">
-            <p class="text-xl font-semibold text-gray-700">Your Recommended Phone:</p>
-            <p id="suggested-phone" class="text-4xl font-extrabold text-blue-600 animate-pulse"></p>
-            <button id="start-over-button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 mt-6">
-                Start Over
-            </button>
-        </div>
-    </div>
-
-    <!-- Link to custom JavaScript file -->
-    <script src="script.js"></script>
+<body>
+  <!-- Geçici ana sayfa: Assignment 2 kişisel sitesi hazır olunca bunun yerine gelecek. -->
+  <h1>Ali Eren Bıçakçıoğlu</h1>
+  <p class="muted">Kişisel site yapım aşamasında. NMED 3203 projeleri:</p>
+  <ul>
+    <li><a href="premise-remix/">The Guide</a> · Agency × Reciprocity (Assignment 1)</li>
+    <li><a href="cockpit-feedback-remix/">Cockpit Sequencer</a> · Feedback</li>
+    <li><a href="arka-direge/">Arka Direğe!</a> · Temporality</li>
+    <li><a href="cyber-flora/">Cyber Flora</a></li>
+    <li><a href="phone-selector/">Phone Selector</a></li>
+  </ul>
 </body>
 </html>

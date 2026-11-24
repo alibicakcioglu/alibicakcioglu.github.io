@@ -2,7 +2,7 @@
 
 **Birinci turda korneri kullan. İkinci turda kendi ortana gol at.**
 
-[Oyunu aç](https://alibicakcioglu.github.io/NMED3203/arka-direge/)
+[Oyunu aç](https://alibicakcioglu.github.io/arka-direge/)
 
 ## İki tur, tek pozisyon
 
